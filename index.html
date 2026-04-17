@@ -1984,15 +1984,6 @@ function autoSaveResearchData() {
   }
 }
 
-// リサーチデータが変更されたときに自動保存
-const originalAddResearch = window.addResearch;
-window.addResearch = function() {
-  originalAddResearch();
-  autoSaveResearchData();
-  if (integrationSettings.sheets_id) {
-    console.log('✓ リサーチデータを LocalStorage に自動保存しました');
-  }
-};
 
 // ==================== INIT ====================
 // テストデータ初期化（最初の1回のみ）
