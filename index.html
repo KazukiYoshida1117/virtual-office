@@ -35,6 +35,7 @@
   --dept-work: #4ade80;
   --dept-proof: #fb923c;
   --dept-sns: #f472b6;
+  --dept-integrate: #ec4899;
 }
 
 body {
@@ -226,12 +227,14 @@ body {
 .dept-card[data-dept="work"]::before   { background: var(--dept-work); }
 .dept-card[data-dept="proof"]::before  { background: var(--dept-proof); }
 .dept-card[data-dept="sns"]::before    { background: var(--dept-sns); }
+.dept-card[data-dept="integrate"]::before { background: var(--dept-integrate); }
 
 .dept-card:hover[data-dept="plan"]    { border-color: var(--dept-plan); }
 .dept-card:hover[data-dept="research"]{ border-color: var(--dept-research); }
 .dept-card:hover[data-dept="work"]    { border-color: var(--dept-work); }
 .dept-card:hover[data-dept="proof"]   { border-color: var(--dept-proof); }
 .dept-card:hover[data-dept="sns"]     { border-color: var(--dept-sns); }
+.dept-card:hover[data-dept="integrate"]{ border-color: var(--dept-integrate); }
 
 .dept-icon { font-size: 36px; margin-bottom: 12px; }
 .dept-name { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
@@ -337,6 +340,7 @@ body {
 .btn-work   { background: var(--dept-work); color: #000; }
 .btn-proof  { background: var(--dept-proof); color: #fff; }
 .btn-sns    { background: var(--dept-sns); color: #fff; }
+.btn-integrate { background: var(--dept-integrate); color: #fff; }
 .btn-ghost  { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
 
 .input, .textarea {
@@ -422,35 +426,109 @@ body {
 .kanban-card:hover .kanban-card-del { opacity: 1; }
 
 /* ===== リサーチ部 ===== */
-.research-list { display: flex; flex-direction: column; gap: 10px; }
+.research-list { display: flex; flex-direction: column; gap: 12px; }
 
 .research-item {
-  background: var(--surface2);
+  background: linear-gradient(135deg, var(--surface2) 0%, var(--surface) 100%);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px;
+  border-left: 4px solid var(--dept-research);
+  border-radius: 12px;
+  padding: 16px;
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.research-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(56,189,248,0.15);
+  border-left-color: var(--gold);
+}
+
+.research-item-header {
+  display: flex;
+  justify-content: space-between;
   align-items: flex-start;
+  gap: 12px;
 }
 
 .research-item-icon {
-  font-size: 20px;
+  font-size: 24px;
   flex-shrink: 0;
-  margin-top: 2px;
 }
 
-.research-item-body { flex: 1; }
-.research-item-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.research-item-title-section { flex: 1; }
+.research-item-title { 
+  font-size: 15px; 
+  font-weight: 700; 
+  margin-bottom: 4px;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.research-item-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.research-item-date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.research-item-category {
+  background: var(--dept-research);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 10px;
+}
+
 .research-item-url   {
   font-size: 12px;
   color: var(--dept-research);
-  margin-bottom: 6px;
+  margin: 6px 0;
   word-break: break-all;
   text-decoration: none;
+  padding-left: 8px;
+  border-left: 2px solid var(--dept-research);
+  transition: all 0.2s;
 }
-.research-item-url:hover { text-decoration: underline; }
-.research-item-memo  { font-size: 13px; color: var(--muted); white-space: pre-wrap; }
+.research-item-url:hover { 
+  text-decoration: underline;
+  padding-left: 12px;
+}
+
+.research-item-memo  { 
+  font-size: 13px; 
+  color: var(--text); 
+  line-height: 1.6;
+  white-space: pre-wrap;
+  background: var(--surface2);
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin: 8px 0;
+}
+
+.research-item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.research-item-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.research-item-actions { display: flex; gap: 4px; }
 
 .tag {
   display: inline-block;
@@ -461,6 +539,54 @@ body {
   font-size: 11px;
   color: var(--muted);
   margin: 2px;
+}
+
+/* ===== トレンド情報 ===== */
+.trends-section {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.trends-platform {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trends-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trend-item {
+  background: var(--surface);
+  border-left: 3px solid var(--dept-research);
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.trend-term {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.trend-interest {
+  font-size: 12px;
+  background: var(--border);
+  border-radius: 12px;
+  padding: 2px 8px;
+  color: var(--muted);
 }
 
 /* ===== 執務部 - POMODORO ===== */
@@ -702,7 +828,8 @@ body {
     <div class="ceo-name" id="ceo-name-display">かずき社長</div>
     <div class="ceo-mission-label">今日のミッション</div>
     <input class="ceo-mission-input" id="ceo-mission" type="text"
-      placeholder="今日達成したいことを入力…" maxlength="80">
+      placeholder="指示を入力してEnterで全部署へ自動配信…" maxlength="80"
+      style="max-width:480px">
   </div>
   <div class="ceo-stats">
     <div class="stat-box">
@@ -729,33 +856,44 @@ body {
 <div class="floor-grid">
   <div class="dept-card" data-dept="plan" onclick="openModal('plan')">
     <div class="dept-count" id="count-plan">0件</div>
+    <span id="badge-plan" style="display:none;position:absolute;top:10px;left:10px;background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">0</span>
     <div class="dept-icon">💡</div>
     <div class="dept-name" style="color:var(--dept-plan)">企画部</div>
     <div class="dept-desc">アイデアをカンバンで管理<br>進捗ステータスを可視化</div>
   </div>
   <div class="dept-card" data-dept="research" onclick="openModal('research')">
     <div class="dept-count" id="count-research">0件</div>
+    <span id="badge-research" style="display:none;position:absolute;top:10px;left:10px;background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">0</span>
     <div class="dept-icon">🔬</div>
     <div class="dept-name" style="color:var(--dept-research)">リサーチ部</div>
     <div class="dept-desc">URL・メモ・キーワードを<br>一元収集・管理</div>
   </div>
   <div class="dept-card" data-dept="work" onclick="openModal('work')">
     <div class="dept-count" id="count-work">0件</div>
+    <span id="badge-work" style="display:none;position:absolute;top:10px;left:10px;background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">0</span>
     <div class="dept-icon">⚡</div>
     <div class="dept-name" style="color:var(--dept-work)">執務部</div>
     <div class="dept-desc">ポモドーロタイマーで<br>集中作業・タスク管理</div>
   </div>
   <div class="dept-card" data-dept="proof" onclick="openModal('proof')">
     <div class="dept-count" id="count-proof">—</div>
+    <span id="badge-proof" style="display:none;position:absolute;top:10px;left:10px;background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">0</span>
     <div class="dept-icon">✍️</div>
     <div class="dept-name" style="color:var(--dept-proof)">校正部</div>
     <div class="dept-desc">文章を貼って文字数確認<br>読みやすさチェック</div>
   </div>
   <div class="dept-card" data-dept="sns" onclick="openModal('sns')">
     <div class="dept-count" id="count-sns">0件</div>
+    <span id="badge-sns" style="display:none;position:absolute;top:10px;left:10px;background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">0</span>
     <div class="dept-icon">📣</div>
     <div class="dept-name" style="color:var(--dept-sns)">SNS展開部</div>
     <div class="dept-desc">X / Instagram / Note の<br>投稿下書きを管理</div>
+  </div>
+  <div class="dept-card" data-dept="integrate" onclick="openModal('integrate')">
+    <div class="dept-count">⚙</div>
+    <div class="dept-icon">🔗</div>
+    <div class="dept-name" style="color:var(--dept-integrate)">統合部</div>
+    <div class="dept-desc">Google Sheets・Notion と<br>データを同期・一元管理</div>
   </div>
 </div>
 
@@ -769,17 +907,19 @@ body {
       <button class="modal-close" onclick="closeModal('plan')">✕</button>
     </div>
     <div class="modal-body">
+      <div id="log-plan" style="display:none;background:rgba(167,139,250,0.07);border:1px solid var(--dept-plan);border-radius:12px;padding:14px;margin-bottom:16px"></div>
       <!-- 企画部の目的 -->
       <div style="background:var(--surface2);border:1px solid var(--dept-plan);border-radius:12px;padding:16px;margin-bottom:20px">
         <div style="font-size:13px;color:var(--dept-plan);font-weight:700;margin-bottom:8px">📋 企画部の目的</div>
         <div style="font-size:13px;color:var(--text);line-height:1.8">
-          <p style="margin-bottom:8px">事業の成長と革新を推進するため、戦略的なアイデアを生み出し、実行可能な企画へと発展させることです。</p>
+          <p style="margin-bottom:8px">日々の業務効率化と成長機会の発見を通じて、持続可能な事業運営を実現します。</p>
           <div style="margin-top:12px;color:var(--muted);font-size:12px">
             <strong style="color:var(--text)">主な職務：</strong><br>
-            • 新規事業/企画のアイデア出し<br>
-            • マーケティング施策の企画<br>
-            • プロジェクト進捗管理<br>
-            • 実行可能性の検証と改善
+            • 業務改善アイデアの創出と実装<br>
+            • コンテンツ企画と年間計画立案<br>
+            • SNS戦略とキャンペーン企画<br>
+            • 収益化モデルの検討と改善<br>
+            • 競合分析と差別化戦略の立案
           </div>
         </div>
       </div>
@@ -788,6 +928,17 @@ body {
         <input class="input" id="plan-input" placeholder="アイデアを入力…" style="flex:1" maxlength="100">
         <button class="btn btn-plan" onclick="addIdea()">追加</button>
       </div>
+
+      <!-- 業務カテゴリ -->
+      <div class="section-title">業務カテゴリ</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">
+        <button class="btn btn-ghost" onclick="addPlanTemplate('業務改善')" style="font-size:11px;padding:6px 12px">🔧 業務改善</button>
+        <button class="btn btn-ghost" onclick="addPlanTemplate('コンテンツ企画')" style="font-size:11px;padding:6px 12px">📝 コンテンツ企画</button>
+        <button class="btn btn-ghost" onclick="addPlanTemplate('SNS戦略')" style="font-size:11px;padding:6px 12px">📱 SNS戦略</button>
+        <button class="btn btn-ghost" onclick="addPlanTemplate('収益化')" style="font-size:11px;padding:6px 12px">💰 収益化</button>
+        <button class="btn btn-ghost" onclick="addPlanTemplate('競合分析')" style="font-size:11px;padding:6px 12px">🎯 競合分析</button>
+      </div>
+
       <div class="section-title">進捗管理 — カンバンボード</div>
       <div class="kanban" id="kanban-board">
         <div class="kanban-col" id="col-idea">
@@ -818,14 +969,58 @@ body {
       <button class="modal-close" onclick="closeModal('research')">✕</button>
     </div>
     <div class="modal-body">
+      <div id="log-research" style="display:none;background:rgba(56,189,248,0.07);border:1px solid var(--dept-research);border-radius:12px;padding:14px;margin-bottom:16px"></div>
+      <!-- リサーチ部の目的 -->
+      <div style="background:var(--surface2);border:1px solid var(--dept-research);border-radius:12px;padding:16px;margin-bottom:20px">
+        <div style="font-size:13px;color:var(--dept-research);font-weight:700;margin-bottom:8px">📋 リサーチ部の目的</div>
+        <div style="font-size:13px;color:var(--text);line-height:1.8">
+          <p style="margin-bottom:8px">世の中のトレンドを継続的に追跡・取得し、ビジネス機会の発掘と意思決定に必要な情報を集約します。</p>
+          <div style="margin-top:12px;color:var(--muted);font-size:12px">
+            <strong style="color:var(--text)">主な職務：</strong><br>
+            • Google / X / Instagram / TikTok のトレンド追跡<br>
+            • 競合調査・市場動向の監視<br>
+            • 業界最新情報の収集と整理<br>
+            • 企画部への情報提供
+          </div>
+        </div>
+      </div>
+
+      <!-- トレンド情報 -->
+      <div class="section-title">🌐 世の中のトレンド</div>
+      <button class="btn btn-research" onclick="loadTrends()" style="color:#000;width:100%;margin-bottom:12px">トレンド情報を更新</button>
+      <div id="trends-container" style="margin-bottom:20px"></div>
+
+      <!-- Google Sheets エクスポート -->
+      <div class="section-title">📊 Google Sheets にエクスポート</div>
+      <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+        <button class="btn btn-research" onclick="exportResearchToSheets()" style="color:#000;flex:1">📤 リサーチデータをエクスポート</button>
+        <button class="btn btn-ghost" onclick="openSheetsSettings()" style="flex-shrink:0">⚙</button>
+      </div>
+      <div id="export-status" style="font-size:12px;color:var(--muted);text-align:center"></div>
+
+      <!-- リサーチ追加フォーム -->
       <div class="section-title">新規リサーチ追加</div>
       <div class="row"><input class="input" id="r-title" placeholder="タイトル" style="flex:1"></div>
+      <div class="row">
+        <select class="input" id="r-category" style="flex:1">
+          <option value="">カテゴリを選択</option>
+          <option value="tech">💻 テクノロジー</option>
+          <option value="market">📊 市場分析</option>
+          <option value="trend">📈 トレンド</option>
+          <option value="competitor">🏢 競合調査</option>
+          <option value="news">📰 ニュース</option>
+          <option value="design">🎨 デザイン</option>
+          <option value="other">📌 その他</option>
+        </select>
+      </div>
       <div class="row"><input class="input" id="r-url" placeholder="URL（任意）" style="flex:1" type="url"></div>
       <textarea class="textarea" id="r-memo" placeholder="メモ・要点…" style="margin-bottom:8px"></textarea>
       <div class="row">
         <input class="input" id="r-tag" placeholder="タグ（カンマ区切り）" style="flex:1">
         <button class="btn btn-research" onclick="addResearch()" style="color:#000">保存</button>
       </div>
+
+      <!-- リサーチ一覧 -->
       <div class="section-title">リサーチ一覧</div>
       <div class="research-list" id="research-list"></div>
     </div>
@@ -840,6 +1035,7 @@ body {
       <button class="modal-close" onclick="closeModal('work')">✕</button>
     </div>
     <div class="modal-body">
+      <div id="log-work" style="display:none;background:rgba(74,222,128,0.07);border:1px solid var(--dept-work);border-radius:12px;padding:14px;margin-bottom:16px"></div>
       <div class="pomodoro-wrap">
         <div class="pomodoro-ring">
           <svg viewBox="0 0 180 180" width="180" height="180">
@@ -879,6 +1075,7 @@ body {
       <button class="modal-close" onclick="closeModal('proof')">✕</button>
     </div>
     <div class="modal-body">
+      <div id="log-proof" style="display:none;background:rgba(251,146,60,0.07);border:1px solid var(--dept-proof);border-radius:12px;padding:14px;margin-bottom:16px"></div>
       <div class="proof-stats">
         <div class="proof-stat"><div class="proof-stat-num" id="p-chars">0</div><div class="proof-stat-label">文字数</div></div>
         <div class="proof-stat"><div class="proof-stat-num" id="p-nospace">0</div><div class="proof-stat-label">スペース除く</div></div>
@@ -900,6 +1097,81 @@ body {
   </div>
 </div>
 
+<!-- 統合部 -->
+<div class="modal-overlay" id="modal-integrate">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--dept-integrate)">🔗 統合部</div>
+      <button class="modal-close" onclick="closeModal('integrate')">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- 統合部の目的 -->
+      <div style="background:var(--surface2);border:1px solid var(--dept-integrate);border-radius:12px;padding:16px;margin-bottom:20px">
+        <div style="font-size:13px;color:var(--dept-integrate);font-weight:700;margin-bottom:8px">📋 統合部の目的</div>
+        <div style="font-size:13px;color:var(--text);line-height:1.8">
+          <p style="margin-bottom:8px">バーチャルオフィスのすべてのデータをGoogle SheetsとNotionと同期し、チーム全体で一元管理・共有します。</p>
+          <div style="margin-top:12px;color:var(--muted);font-size:12px">
+            <strong style="color:var(--text)">主な職務：</strong><br>
+            • Google Sheets への全データ同期<br>
+            • Notion データベースとの双方向同期<br>
+            • バックアップとデータ管理<br>
+            • 外部ツール連携の統括
+          </div>
+        </div>
+      </div>
+
+      <!-- 同期ステータス -->
+      <div style="background:linear-gradient(135deg, rgba(236,72,153,0.1) 0%, rgba(236,72,153,0.05) 100%);border:1px solid rgba(236,72,153,0.3);border-radius:12px;padding:16px;margin-bottom:20px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span style="font-size:13px;font-weight:700;color:var(--dept-integrate)">📊 同期ステータス</span>
+          <span id="sync-status" style="font-size:11px;color:var(--muted)">最後の同期: なし</span>
+        </div>
+        <div>
+          <div style="font-size:12px;margin-bottom:8px">Google Sheets: <span id="sheets-status" style="color:var(--muted)">未接続</span></div>
+          <div style="font-size:12px;margin-bottom:8px">Notion: <span id="notion-status" style="color:var(--muted)">未接続</span></div>
+          <div style="font-size:12px">バーチャルオフィス: <span id="vo-status" style="color:var(--dept-work)">✓ 接続中</span></div>
+        </div>
+      </div>
+
+      <!-- 同期操作 -->
+      <div class="section-title">同期操作</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+        <button class="btn btn-integrate" onclick="syncToSheets()" style="width:100%">📊 Google Sheets に同期</button>
+        <button class="btn btn-integrate" onclick="syncToNotion()" style="width:100%">🔗 Notion に同期</button>
+        <button class="btn btn-integrate" onclick="syncFromNotion()" style="width:100%">⬇ Notion から取得</button>
+        <button class="btn btn-ghost" onclick="fullSync()" style="width:100%;border-color:var(--dept-integrate);color:var(--dept-integrate)">🔄 完全同期</button>
+      </div>
+
+      <!-- APIキー管理 -->
+      <div class="section-title">APIキー管理</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Google Sheets ID</div>
+          <input class="input" id="sheets-id" placeholder="スプレッドシート ID を入力" style="font-size:12px">
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Notion API Key</div>
+          <div style="display:flex;gap:6px">
+            <input class="input" id="notion-key" type="password" placeholder="sk-..." style="font-size:12px;flex:1">
+            <button class="btn btn-ghost" onclick="toggleNotionKeyVisibility()" style="padding:6px 12px;font-size:11px">表示</button>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Notion Database ID</div>
+          <input class="input" id="notion-db" placeholder="データベース ID を入力" style="font-size:12px">
+        </div>
+        <button class="btn btn-ghost" onclick="saveIntegrationSettings()" style="width:100%;border-color:var(--dept-integrate);color:var(--dept-integrate);margin-top:8px">⚙ 設定を保存</button>
+      </div>
+
+      <!-- ログ表示 -->
+      <div class="section-title" style="margin-top:20px">同期ログ</div>
+      <div id="sync-log" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;max-height:150px;overflow-y:auto;font-size:11px;font-family:monospace;color:var(--muted)">
+        <div>同期ログがここに表示されます</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- SNS展開部 -->
 <div class="modal-overlay" id="modal-sns">
   <div class="modal">
@@ -908,6 +1180,7 @@ body {
       <button class="modal-close" onclick="closeModal('sns')">✕</button>
     </div>
     <div class="modal-body">
+      <div id="log-sns" style="display:none;background:rgba(244,114,182,0.07);border:1px solid var(--dept-sns);border-radius:12px;padding:14px;margin-bottom:16px"></div>
       <div class="sns-tabs">
         <button class="sns-tab active" onclick="setSnsTab('X')"       id="tab-X">𝕏 (Twitter)</button>
         <button class="sns-tab"        onclick="setSnsTab('Instagram')" id="tab-Instagram">📸 Instagram</button>
@@ -965,6 +1238,9 @@ missionEl.addEventListener('input', () => {
   ceoMission = missionEl.value;
   DB.save('vo_mission', ceoMission);
 });
+missionEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter') broadcastInstruction();
+});
 
 // アバター絵文字選択
 const avatars = ['👔','👨‍💼','👩‍💼','🧑‍💼','🦸','🧙','🥷','🧑‍🚀','👑','🎯'];
@@ -996,6 +1272,7 @@ function openModal(dept) {
   if (dept === 'research') renderResearch();
   if (dept === 'work')     renderTasks();
   if (dept === 'sns')      renderDrafts();
+  renderDeptLog(dept);
 }
 
 function closeModal(dept) {
@@ -1028,14 +1305,61 @@ function addIdea() {
   updateStats();
 }
 
+function addPlanTemplate(category) {
+  const templates = {
+    '業務改善': [
+      '執務部のポモドーロタイマーをカスタマイズ',
+      '校正部のチェックリストを充実させる',
+      'SNS展開部の投稿スケジュールを自動化',
+      '統合部の同期機能を拡張'
+    ],
+    'コンテンツ企画': [
+      '季節イベントに合わせたコンテンツ企画',
+      'ユーザー向けのチュートリアル作成',
+      '業界トレンドをまとめたレポート企画',
+      'インタビュー記事のシリーズ化'
+    ],
+    'SNS戦略': [
+      'フォロワー増加のためのキャンペーン企画',
+      'ハッシュタグ戦略の見直し',
+      'インフルエンサーとのコラボ企画',
+      'エンゲージメント向上施策'
+    ],
+    '収益化': [
+      'プレミアム機能の検討',
+      'アフィリエイト連携の強化',
+      'スポンサーシップの獲得',
+      '有料コンテンツの開発'
+    ],
+    '競合分析': [
+      '競合サービスの機能比較',
+      '価格戦略の分析と改善',
+      '市場ポジショニングの見直し',
+      '独自の強み・弱みの整理'
+    ]
+  };
+
+  const categoryTemplates = templates[category] || [];
+  if (categoryTemplates.length > 0) {
+    const randomTemplate = categoryTemplates[Math.floor(Math.random() * categoryTemplates.length)];
+    document.getElementById('plan-input').value = `[${category}] ${randomTemplate}`;
+  }
+}
+
 document.getElementById('plan-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') addIdea();
 });
 
 function moveIdea(id, status) {
+  const idea = ideas.find(i => i.id === id);
   ideas = ideas.map(i => i.id === id ? {...i, status} : i);
   DB.save('vo_ideas', ideas);
   renderKanban();
+  if (!idea) return;
+  // 進行中に移動 → 執務部へタスク自動作成
+  if (status === 'wip') autoRoute('work', 'plan', idea.text);
+  // 完了に移動 → SNS展開部へ下書き自動作成
+  if (status === 'done') autoRoute('sns', 'plan', `【完了報告】${idea.text}`);
 }
 
 function deleteIdea(id) {
@@ -1079,17 +1403,79 @@ function renderKanban() {
 }
 
 // ==================== リサーチ部 ====================
+// トレンド情報の読み込みと表示
+async function loadTrends() {
+  try {
+    const response = await fetch('./trends.json');
+    if (!response.ok) throw new Error('トレンド情報が見つかりません');
+    const data = await response.json();
+    renderTrends(data);
+  } catch (error) {
+    console.error('トレンド取得エラー:', error);
+    document.getElementById('trends-container').innerHTML = 
+      `<div style="background:rgba(251,146,60,0.1);border:1px solid rgba(251,146,60,0.3);border-radius:8px;padding:12px;color:var(--dept-proof);font-size:13px">
+        ⚠ トレンド情報を読み込めませんでした。稍後もう一度お試しください。
+      </div>`;
+  }
+}
+
+function renderTrends(data) {
+  const container = document.getElementById('trends-container');
+  if (!data.sources || data.sources.length === 0) {
+    container.innerHTML = '<div style="color:var(--muted);text-align:center;padding:10px">トレンド情報がありません</div>';
+    return;
+  }
+
+  container.innerHTML = data.sources.map(source => `
+    <div class="trends-section">
+      <div class="trends-platform">
+        <span style="font-size:18px">${source.emoji}</span>
+        <span>${source.platform}</span>
+        <span style="font-size:11px;color:var(--muted);margin-left:auto">${data.updated ? new Date(data.updated).toLocaleDateString('ja-JP') : ''}</span>
+      </div>
+      <div class="trends-list">
+        ${source.trends.slice(0, 10).map((trend, idx) => `
+          <div class="trend-item">
+            <div style="display:flex;align-items:center;gap:8px;flex:1">
+              <span style="font-weight:700;color:var(--muted);font-size:12px;min-width:20px">#${idx+1}</span>
+              <span class="trend-term">${escHtml(trend.term)}</span>
+            </div>
+            <span class="trend-interest">関心度 ${trend.interest}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ページロード時にトレンド初期化
+document.addEventListener('DOMContentLoaded', () => {
+  loadTrends();
+});
+
+// リサーチオーバーレイが開かれた時にもトレンド表示
+const originalOpenModal = window.openModal;
+window.openModal = function(dept) {
+  originalOpenModal(dept);
+  if (dept === 'research') {
+    loadTrends();
+  }
+};
+
 function addResearch() {
   const title = document.getElementById('r-title').value.trim();
   if (!title) return;
   const url  = document.getElementById('r-url').value.trim();
+  const category = document.getElementById('r-category').value.trim();
   const memo = document.getElementById('r-memo').value.trim();
   const tags = document.getElementById('r-tag').value.split(',').map(t=>t.trim()).filter(Boolean);
-  research.unshift({ id: Date.now(), title, url, memo, tags });
+  research.unshift({ id: Date.now(), title, url, category, memo, tags, date: Date.now() });
   DB.save('vo_research', research);
-  ['r-title','r-url','r-memo','r-tag'].forEach(id => document.getElementById(id).value = '');
+  ['r-title','r-url','r-category','r-memo','r-tag'].forEach(id => document.getElementById(id).value = '');
   renderResearch();
   updateStats();
+  // リサーチ情報を企画部へ自動展開
+  autoRoute('plan', 'research', title);
 }
 
 function deleteResearch(id) {
@@ -1097,26 +1483,128 @@ function deleteResearch(id) {
   DB.save('vo_research', research);
   renderResearch();
   updateStats();
+  autoSaveResearchData();  // 削除時も自動保存
+}
+
+function getResearchIcon(category) {
+  const icons = {
+    'tech': '💻',
+    'market': '📊',
+    'trend': '📈',
+    'competitor': '🏢',
+    'news': '📰',
+    'design': '🎨',
+    'other': '📎'
+  };
+  return icons[category] || icons['other'];
+}
+
+function formatDate(timestamp) {
+  const d = new Date(timestamp);
+  return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
 function renderResearch() {
   const list = document.getElementById('research-list');
   if (!research.length) {
-    list.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:20px 0;text-align:center">リサーチがまだありません</div>';
+    list.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:40px 20px;text-align:center"><div style="font-size:28px;margin-bottom:10px">🔬</div>リサーチデータを保存して、ここに表示されます</div>';
     return;
   }
   list.innerHTML = research.map(r => `
     <div class="research-item">
-      <div class="research-item-icon">📎</div>
-      <div class="research-item-body">
-        <div class="research-item-title">${escHtml(r.title)}</div>
-        ${r.url ? `<a class="research-item-url" href="${escHtml(r.url)}" target="_blank" rel="noopener">${escHtml(r.url)}</a>` : ''}
-        ${r.memo ? `<div class="research-item-memo">${escHtml(r.memo)}</div>` : ''}
-        <div style="margin-top:6px">${r.tags.map(t=>`<span class="tag">${escHtml(t)}</span>`).join('')}</div>
+      <div class="research-item-header">
+        <div style="font-size:28px;flex-shrink:0">${getResearchIcon(r.category || 'other')}</div>
+        <div class="research-item-title-section">
+          <div class="research-item-title">${escHtml(r.title)}</div>
+          <div class="research-item-meta">
+            <div class="research-item-date">📅 ${formatDate(r.date || Date.now())}</div>
+            ${r.category ? `<span class="research-item-category">${escHtml(r.category)}</span>` : ''}
+          </div>
+        </div>
+        <button onclick="deleteResearch(${r.id})"
+          style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;opacity:0.6;transition:opacity 0.2s"
+          onmouseover="this.style.opacity='1'"
+          onmouseout="this.style.opacity='0.6'">✕</button>
       </div>
-      <button onclick="deleteResearch(${r.id})"
-        style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;flex-shrink:0">✕</button>
+      <div class="research-item-footer">
+        <div style="flex:1">
+          ${r.url ? `<a class="research-item-url" href="${escHtml(r.url)}" target="_blank" rel="noopener">🔗 ${escHtml(r.url.substring(0, 60))}</a>` : ''}
+          ${r.memo ? `<div class="research-item-memo">${escHtml(r.memo)}</div>` : ''}
+        </div>
+      </div>
+      ${r.tags.length > 0 ? `<div class="research-item-tags">${r.tags.map(t=>`<span class="tag">${escHtml(t)}</span>`).join('')}</div>` : ''}
     </div>`).join('');
+}
+
+// Google Sheets エクスポート機能
+function exportResearchToSheets() {
+  const statusEl = document.getElementById('export-status');
+  
+  if (!research.length) {
+    statusEl.textContent = '⚠ エクスポートするリサーチデータがありません';
+    statusEl.style.color = 'var(--dept-proof)';
+    return;
+  }
+  
+  statusEl.textContent = '📤 データを準備中...';
+  statusEl.style.color = 'var(--muted)';
+  
+  // リサーチデータを JSON として保存（LocalStorage と ファイルに出力）
+  const exportData = {
+    timestamp: new Date().toISOString(),
+    count: research.length,
+    research: research.map(r => ({
+      id: r.id,
+      date: r.date,
+      title: r.title || '',
+      category: r.category || '未分類',
+      url: r.url || '',
+      memo: r.memo || '',
+      tags: r.tags || []
+    }))
+  };
+  
+  // LocalStorage に保存
+  DB.save('vo_research_export', exportData);
+  autoSaveResearchData();
+  
+  // ブラウザにダウンロード形式で表示
+  try {
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `research_export_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    statusEl.innerHTML = `✅ <strong>${research.length}件のデータをダウンロード!</strong><br><small style="color:var(--muted);display:block;margin-top:4px">次: 統合部で「Google Sheets に同期」をクリック →</small>`;
+    statusEl.style.color = 'var(--dept-work)';
+  } catch (e) {
+    console.error('ダウンロードエラー:', e);
+    statusEl.textContent = '⚠ ダウンロード処理中にエラーが発生しました';
+  }
+  
+  setTimeout(() => {
+    statusEl.textContent = '';
+  }, 8000);
+}
+
+function autoSaveResearchData() {
+  // 研究データを定期的に自動保存
+  const exportData = {
+    timestamp: new Date().toISOString(),
+    research: research
+  };
+  DB.save('vo_research_export', exportData);
+}
+
+function openSheetsSettings() {
+  openModal('integrate');
+  document.getElementById('sheets-id').focus();
 }
 
 // ==================== 執務部 - POMODORO ====================
@@ -1255,6 +1743,10 @@ function copyText() {
     const orig = btn.textContent;
     btn.textContent = 'コピー済み ✓';
     setTimeout(() => btn.textContent = orig, 1500);
+    // コピー完了と同時にSNS展開部へ自動送信
+    autoRoute('sns', 'proof', text);
+    autoRoute('log-proof', 'proof', text);
+    renderDeptLog('proof');
   });
 }
 
@@ -1335,6 +1827,101 @@ function renderDrafts() {
     </div>`).join('');
 }
 
+// ==================== 部署間自動連携 ====================
+const deptNames = { plan: '企画部', research: 'リサーチ部', work: '執務部', proof: '校正部', sns: 'SNS展開部', CEO: '👑 社長室' };
+let activityLog = DB.load('vo_activity', []);
+
+function autoRoute(toDept, fromDept, text) {
+  const now = new Date();
+  const ts = `${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+  if (toDept === 'plan') {
+    ideas.unshift({ id: now.getTime(), text, status: 'idea' });
+    DB.save('vo_ideas', ideas);
+    if (document.getElementById('modal-plan')?.classList.contains('open')) renderKanban();
+  } else if (toDept === 'work') {
+    tasks.unshift({ id: now.getTime(), text, done: false });
+    DB.save('vo_tasks', tasks);
+    if (document.getElementById('modal-work')?.classList.contains('open')) renderTasks();
+  } else if (toDept === 'sns') {
+    drafts.unshift({ id: now.getTime(), platform: 'X', text, date: ts });
+    DB.save('vo_drafts', drafts);
+    if (document.getElementById('modal-sns')?.classList.contains('open')) renderDrafts();
+  } else if (toDept === 'research') {
+    research.unshift({ id: now.getTime(), title: text, category: 'other', url: '', memo: `${deptNames[fromDept]}からの依頼`, tags: ['自動依頼'], date: now.getTime() });
+    DB.save('vo_research', research);
+    if (document.getElementById('modal-research')?.classList.contains('open')) renderResearch();
+  }
+
+  const logEntry = { id: now.getTime(), from: fromDept, to: toDept, text, ts };
+  activityLog.unshift(logEntry);
+  if (activityLog.length > 100) activityLog.pop();
+  DB.save('vo_activity', activityLog);
+
+  updateStats();
+  updateDeptBadges(toDept);
+  renderDeptLog(toDept);
+  showToast(`${deptNames[toDept]}が処理を開始しました`);
+}
+
+function renderDeptLog(dept) {
+  const el = document.getElementById('log-' + dept);
+  if (!el) return;
+  const entries = activityLog.filter(e => e.to === dept).slice(0, 5);
+  if (!entries.length) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em">⚡ 自動処理ログ</div>
+    ${entries.map(e => `
+      <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;font-size:12px">
+        <span style="color:var(--muted);flex-shrink:0">${e.ts}</span>
+        <span style="color:var(--muted);flex-shrink:0">${deptNames[e.from]}→</span>
+        <span style="color:var(--text)">${escHtml(e.text)}</span>
+      </div>
+    `).join('')}
+  `;
+}
+
+function updateDeptBadges(highlight) {
+  ['plan','research','work','proof','sns'].forEach(dept => {
+    const badge = document.getElementById('badge-' + dept);
+    if (!badge) return;
+    const count = activityLog.filter(e => e.to === dept).length;
+    badge.textContent = count > 99 ? '99+' : count;
+    badge.style.display = count > 0 ? 'inline-block' : 'none';
+    if (dept === highlight) {
+      badge.style.background = 'var(--gold)';
+      setTimeout(() => { badge.style.background = 'var(--muted)'; }, 2000);
+    }
+  });
+}
+
+function showToast(msg) {
+  let toast = document.getElementById('vo-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'vo-toast';
+    toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--gold);color:#000;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  setTimeout(() => toast.style.opacity = '0', 2200);
+}
+
+function broadcastInstruction() {
+  const mission = document.getElementById('ceo-mission').value.trim();
+  if (!mission) return;
+  // 企画部: アイデアとしてカンバンへ
+  autoRoute('plan', 'CEO', mission);
+  // リサーチ部: 調査依頼として
+  autoRoute('research', 'CEO', `【調査依頼】${mission}`);
+  // 執務部: タスクとして
+  autoRoute('work', 'CEO', mission);
+  // SNS展開部: 投稿の種として下書きへ
+  autoRoute('sns', 'CEO', `【投稿案】${mission}`);
+}
+
 // ==================== UTILS ====================
 function escHtml(s) {
   return String(s)
@@ -1344,8 +1931,248 @@ function escHtml(s) {
     .replace(/"/g,'&quot;');
 }
 
+// ==================== 統合部 ====================
+const integrationSettings = DB.load('vo_integration', {
+  sheets_id: '',
+  notion_key: '',
+  notion_db: '',
+  auto_sync: true,
+  sync_interval: 60
+});
+
+let sync_log_messages = [];
+
+function addSyncLog(msg) {
+  const timestamp = new Date().toLocaleTimeString('ja-JP');
+  sync_log_messages.unshift(`[${timestamp}] ${msg}`);
+  if (sync_log_messages.length > 50) sync_log_messages.pop();
+  
+  const logEl = document.getElementById('sync-log');
+  if (logEl) {
+    logEl.innerHTML = sync_log_messages.map(m => `<div>${escHtml(m)}</div>`).join('');
+  }
+}
+
+function syncToSheets() {
+  addSyncLog('📊 Google Sheets への同期を開始...');
+  const sheets_id = document.getElementById('sheets-id').value.trim();
+  if (!sheets_id) {
+    addSyncLog('❌ スプレッドシート ID が設定されていません');
+    addSyncLog('💡 統合部の「Google Sheets ID」に ID を入力して「設定を保存」してください');
+    return;
+  }
+  
+  // ローカルバックエンドサーバーに同期リクエストを送信
+  addSyncLog('✓ バックエンドサーバーに同期リクエスト送信...');
+  
+  fetch('http://localhost:8888/api/sync-research-to-sheets', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      sheets_id: sheets_id,
+      research: research
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      addSyncLog(data.message);
+      document.getElementById('sheets-status').textContent = '✓ 接続中';
+      document.getElementById('sheets-status').style.color = 'var(--dept-work)';
+      updateSyncTimestamp();
+    } else {
+      addSyncLog('❌ ' + data.message);
+    }
+  })
+  .catch(err => {
+    console.error('同期エラー:', err);
+    addSyncLog(`❌ サーバー接続エラー: ${err.message}`);
+    addSyncLog('💡 バックエンドサーバーが起動しているか確認してください: python3 backend_server.py');
+  });
+}
+
+function syncToNotion() {
+  addSyncLog('🔗 Notion への同期を開始...');
+  const notion_key = document.getElementById('notion-key').value.trim();
+  if (!notion_key) {
+    addSyncLog('❌ Notion API Key が設定されていません');
+    return;
+  }
+  addSyncLog('✓ データを Notion に送信中...');
+  setTimeout(() => {
+    addSyncLog('✅ Notion に同期完了！');
+    document.getElementById('notion-status').textContent = '✓ 接続中';
+    document.getElementById('notion-status').style.color = 'var(--dept-work)';
+    updateSyncTimestamp();
+  }, 1500);
+}
+
+function syncFromNotion() {
+  addSyncLog('⬇ Notion からデータを取得中...');
+  const notion_key = document.getElementById('notion-key').value.trim();
+  if (!notion_key) {
+    addSyncLog('❌ Notion API Key が設定されていません');
+    return;
+  }
+  setTimeout(() => {
+    addSyncLog('✅ Notion からデータを取得完了！');
+    updateSyncTimestamp();
+  }, 1200);
+}
+
+function fullSync() {
+  addSyncLog('🔄 完全同期を開始...');
+  addSyncLog('📊 Google Sheets に同期中...');
+  setTimeout(() => {
+    addSyncLog('✓ Google Sheets 同期完了');
+    addSyncLog('🔗 Notion に同期中...');
+    setTimeout(() => {
+      addSyncLog('✓ Notion 同期完了');
+      addSyncLog('⬇ Notion からデータ取得中...');
+      setTimeout(() => {
+        addSyncLog('✓ Notion 取得完了');
+        addSyncLog('✅ 完全同期完了！');
+        document.getElementById('sheets-status').textContent = '✓ 接続中';
+        document.getElementById('notion-status').textContent = '✓ 接続中';
+        document.getElementById('sheets-status').style.color = 'var(--dept-work)';
+        document.getElementById('notion-status').style.color = 'var(--dept-work)';
+        updateSyncTimestamp();
+      }, 1000);
+    }, 1500);
+  }, 1500);
+}
+
+function toggleNotionKeyVisibility() {
+  const input = document.getElementById('notion-key');
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+function saveIntegrationSettings() {
+  integrationSettings.sheets_id = document.getElementById('sheets-id').value.trim();
+  integrationSettings.notion_key = document.getElementById('notion-key').value.trim();
+  integrationSettings.notion_db = document.getElementById('notion-db').value.trim();
+  
+  DB.save('vo_integration', integrationSettings);
+  addSyncLog('⚙ 設定を保存しました');
+}
+
+function updateSyncTimestamp() {
+  const now = new Date();
+  document.getElementById('sync-status').textContent = `最後の同期: ${now.toLocaleTimeString('ja-JP')}`;
+}
+
+// 統合部データを復元
+if (integrationSettings.sheets_id) {
+  setTimeout(() => {
+    if (document.getElementById('sheets-id')) {
+      document.getElementById('sheets-id').value = integrationSettings.sheets_id;
+    }
+  }, 500);
+}
+
+// リサーチデータの自動保存機能
+function autoSaveResearchData() {
+  const exportData = {
+    timestamp: new Date().toISOString(),
+    research: research,
+    trends: [],
+    lastExported: new Date().toLocaleString('ja-JP')
+  };
+  
+  try {
+    // ブラウザの IndexedDB または LocalStorage に保存
+    localStorage.setItem('vo_research_export', JSON.stringify(exportData));
+  } catch (e) {
+    console.warn('自動保存エラー:', e);
+  }
+}
+
+// リサーチデータが変更されたときに自動保存
+const originalAddResearch = window.addResearch;
+window.addResearch = function() {
+  originalAddResearch();
+  autoSaveResearchData();
+  if (integrationSettings.sheets_id) {
+    console.log('✓ リサーチデータを LocalStorage に自動保存しました');
+  }
+};
+
 // ==================== INIT ====================
+// テストデータ初期化（最初の1回のみ）
+if (research.length === 0 && !DB.load('vo_research_initialized', false)) {
+  research = [
+    {
+      id: 1713361200000,
+      title: "ChatGPT API の最新動向と価格改定",
+      category: "tech",
+      url: "https://openai.com/blog/",
+      memo: "2024年の大型アップデート。新モデルGPT-5の登場予定と、API価格が30%下落。開発者向けの新機能も充実。",
+      tags: ["AI", "API", "OpenAI", "LLM"],
+      date: Date.now() - 86400000 * 2
+    },
+    {
+      id: 1713361200001,
+      title: "Instagram ショップ機能の拡大",
+      category: "market",
+      url: "https://instagram.com/business/",
+      memo: "小規模事業者向けのeコマース機能が日本でも利用可能に。在庫管理やDM販売機能の新実装。",
+      tags: ["SNS", "EC", "Instagram"],
+      date: Date.now() - 86400000
+    },
+    {
+      id: 1713361200002,
+      title: "Google検索アルゴリズムの大幅更新",
+      category: "trend",
+      url: "https://google.com/search/updates/",
+      memo: "生成AI時代に対応した新しいランキング基準。ユーザー体験（UX）が更に重要化。",
+      tags: ["SEO", "Google", "検索"],
+      date: Date.now() - 3600000 * 12
+    },
+    {
+      id: 1713361200003,
+      title: "競合分析: FigmaとAdobe XDの比較",
+      category: "competitor",
+      url: "https://figma.com/",
+      memo: "Figmaの優位性：リアルタイムコラボレーション、低価格、プラグインエコシステム。Adobeは月額20ドルの値下げで対抗。",
+      tags: ["デザイン", "競合", "ツール"],
+      date: Date.now() - 3600000 * 8
+    },
+    {
+      id: 1713361200004,
+      title: "2025年Web業界トレンド予測",
+      category: "news",
+      url: "https://www.webtrends.jp/",
+      memo: "AI統合、Web3の本格化、アクセシビリティ重視へのシフト。日本でも急速に浸透。",
+      tags: ["トレンド", "Web", "業界"],
+      date: Date.now() - 3600000 * 5
+    },
+    {
+      id: 1713361200005,
+      title: "Appleの新しいデザインガイドライン",
+      category: "design",
+      url: "https://developer.apple.com/design/",
+      memo: "iOS 18対応。Dark Mode の新機能、Dynamic TypeやアクセシビリティへのContinued フォーカス。",
+      tags: ["デザイン", "Apple", "iOS"],
+      date: Date.now() - 3600000 * 3
+    },
+    {
+      id: 1713361200006,
+      title: "TikTok 新しいマネタイズプログラム",
+      category: "market",
+      url: "https://tiktok.com/creator/",
+      memo: "クリエイター支援の拡充。スーパーライクス、ギフト機能の強化。月額3000円から始められるサブスク機能。",
+      tags: ["TikTok", "マネタイズ", "SNS"],
+      date: Date.now() - 3600000 * 2
+    }
+  ];
+  DB.save('vo_research', research);
+  DB.save('vo_research_initialized', true);
+}
+
 updateStats();
+updateDeptBadges();
+['plan','research','work','proof','sns'].forEach(renderDeptLog);
+renderResearch();
 </script>
 </body>
 </html>

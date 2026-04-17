@@ -1,0 +1,189 @@
+{
+  "updated": "2026-04-17T12:54:29.089325",
+  "sources": [
+    {
+      "platform": "Google",
+      "emoji": "🔍",
+      "trends": [
+        {
+          "term": "生成AI",
+          "interest": 98
+        },
+        {
+          "term": "ChatGPT",
+          "interest": 95
+        },
+        {
+          "term": "Python",
+          "interest": 88
+        },
+        {
+          "term": "Web開発",
+          "interest": 82
+        },
+        {
+          "term": "データ分析",
+          "interest": 79
+        },
+        {
+          "term": "機械学習",
+          "interest": 85
+        },
+        {
+          "term": "クラウド",
+          "interest": 76
+        },
+        {
+          "term": "セキュリティ",
+          "interest": 74
+        },
+        {
+          "term": "Docker",
+          "interest": 70
+        },
+        {
+          "term": "React",
+          "interest": 73
+        }
+      ]
+    },
+    {
+      "platform": "X (Twitter)",
+      "emoji": "𝕏",
+      "trends": [
+        {
+          "term": "#生成AI",
+          "interest": 95
+        },
+        {
+          "term": "#Web3",
+          "interest": 85
+        },
+        {
+          "term": "#ChatGPT",
+          "interest": 92
+        },
+        {
+          "term": "#メタバース",
+          "interest": 72
+        },
+        {
+          "term": "#NFT",
+          "interest": 65
+        },
+        {
+          "term": "#DeFi",
+          "interest": 60
+        },
+        {
+          "term": "#ブロックチェーン",
+          "interest": 78
+        },
+        {
+          "term": "#テック企業",
+          "interest": 88
+        },
+        {
+          "term": "#スタートアップ",
+          "interest": 75
+        },
+        {
+          "term": "#IT業界",
+          "interest": 82
+        }
+      ]
+    },
+    {
+      "platform": "Instagram",
+      "emoji": "📸",
+      "trends": [
+        {
+          "term": "#ファッション",
+          "interest": 94
+        },
+        {
+          "term": "#美容",
+          "interest": 92
+        },
+        {
+          "term": "#ライフスタイル",
+          "interest": 88
+        },
+        {
+          "term": "#グルメ",
+          "interest": 85
+        },
+        {
+          "term": "#旅行",
+          "interest": 83
+        },
+        {
+          "term": "#フィットネス",
+          "interest": 81
+        },
+        {
+          "term": "#インテリア",
+          "interest": 79
+        },
+        {
+          "term": "#DIY",
+          "interest": 76
+        },
+        {
+          "term": "#ペット",
+          "interest": 78
+        },
+        {
+          "term": "#メイク",
+          "interest": 80
+        }
+      ]
+    },
+    {
+      "platform": "TikTok",
+      "emoji": "🎵",
+      "trends": [
+        {
+          "term": "#ダンスチャレンジ",
+          "interest": 96
+        },
+        {
+          "term": "#ショート動画",
+          "interest": 94
+        },
+        {
+          "term": "#コメディ",
+          "interest": 90
+        },
+        {
+          "term": "#音楽",
+          "interest": 92
+        },
+        {
+          "term": "#エンタメ",
+          "interest": 88
+        },
+        {
+          "term": "#チュートリアル",
+          "interest": 85
+        },
+        {
+          "term": "#トレンド曲",
+          "interest": 87
+        },
+        {
+          "term": "#クリエイティブ",
+          "interest": 83
+        },
+        {
+          "term": "#教育",
+          "interest": 79
+        },
+        {
+          "term": "#ライフハック",
+          "interest": 81
+        }
+      ]
+    }
+  ]
+}
