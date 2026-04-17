@@ -224,19 +224,39 @@ body {
   box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 
-.dept-card[data-dept="plan"]::before   { background: var(--dept-plan); }
+.dept-card[data-dept="plan"]::before     { background: var(--dept-plan); }
 .dept-card[data-dept="research"]::before { background: var(--dept-research); }
-.dept-card[data-dept="work"]::before   { background: var(--dept-work); }
-.dept-card[data-dept="proof"]::before  { background: var(--dept-proof); }
-.dept-card[data-dept="sns"]::before    { background: var(--dept-sns); }
-.dept-card[data-dept="integrate"]::before { background: var(--dept-integrate); }
+.dept-card[data-dept="work"]::before     { background: var(--dept-work); }
+.dept-card[data-dept="proof"]::before    { background: var(--dept-proof); }
+.dept-card[data-dept="sns"]::before      { background: var(--dept-sns); }
+.dept-card[data-dept="think"]::before    { background: var(--dept-think); }
+.dept-card[data-dept="web"]::before      { background: var(--dept-web); }
 
-.dept-card:hover[data-dept="plan"]    { border-color: var(--dept-plan); }
-.dept-card:hover[data-dept="research"]{ border-color: var(--dept-research); }
-.dept-card:hover[data-dept="work"]    { border-color: var(--dept-work); }
-.dept-card:hover[data-dept="proof"]   { border-color: var(--dept-proof); }
-.dept-card:hover[data-dept="sns"]     { border-color: var(--dept-sns); }
-.dept-card:hover[data-dept="integrate"]{ border-color: var(--dept-integrate); }
+.dept-card:hover[data-dept="plan"]     { border-color: var(--dept-plan); }
+.dept-card:hover[data-dept="research"] { border-color: var(--dept-research); }
+.dept-card:hover[data-dept="work"]     { border-color: var(--dept-work); }
+.dept-card:hover[data-dept="proof"]    { border-color: var(--dept-proof); }
+.dept-card:hover[data-dept="sns"]      { border-color: var(--dept-sns); }
+.dept-card:hover[data-dept="think"]    { border-color: var(--dept-think); }
+.dept-card:hover[data-dept="web"]      { border-color: var(--dept-web); }
+
+/* 司令塔AI - 第2層 */
+.dept-card.layer2 {
+  border-color: rgba(245,200,66,0.4);
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(245,200,66,0.06) 100%);
+}
+.dept-card.layer2:hover { border-color: var(--gold); }
+.layer-badge {
+  position: absolute;
+  bottom: 14px; right: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 8px;
+  letter-spacing: .04em;
+}
+.layer2-badge { background: rgba(245,200,66,0.15); color: var(--gold); }
+.layer3-badge { background: var(--surface2); color: var(--muted); }
 
 .dept-icon { font-size: 36px; margin-bottom: 12px; }
 .dept-name { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
