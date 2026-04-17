@@ -16,7 +16,9 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 SCRIPT_DIR = Path(__file__).parent
-load_dotenv(SCRIPT_DIR / '.env')
+ROOT_DIR   = SCRIPT_DIR.parent
+DATA_DIR   = ROOT_DIR / 'data'
+load_dotenv(DATA_DIR / '.env')
 
 logging.basicConfig(
     level=logging.INFO,

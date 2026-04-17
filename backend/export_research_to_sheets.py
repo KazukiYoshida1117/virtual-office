@@ -15,6 +15,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 SCRIPT_DIR = Path(__file__).parent
+ROOT_DIR   = SCRIPT_DIR.parent
+DATA_DIR   = ROOT_DIR / 'data'
 
 # Google Sheets 認証
 try:
@@ -26,7 +28,7 @@ except ImportError:
     logger.error("pip install gspread google-auth-oauthlib google-auth-httplib2 python-dotenv")
     sys.exit(1)
 
-load_dotenv(SCRIPT_DIR / '.env')
+load_dotenv(DATA_DIR / '.env')
 
 def export_research_to_sheets():
     """リサーチデータをGoogle Sheetsにエクスポート"""
@@ -35,7 +37,7 @@ def export_research_to_sheets():
     
     # 1. 認証情報を読み込み
     try:
-        creds_file = SCRIPT_DIR / 'credentials' / 'google_sheets_credentials.json'
+        creds_file = DATA_DIR / 'credentials' / 'google_sheets_credentials.json'
         if not creds_file.exists():
             logger.error(f"❌ 認証ファイルが見つかりません: {creds_file}")
             logger.error("SETUP_GUIDE.md を参照して認証情報を配置してください")

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export PATH="/opt/homebrew/bin:$PATH"
-REPO="/Users/kazukiyoshida/Desktop/claude/virtual-office"
+REPO="/Users/kazukiyoshida/Desktop/claude/CEO-Office/virtual-office"
 
 echo "自動同期を開始しました。ファイルを保存すると自動でGitHubに反映されます。"
 echo "停止するには Ctrl+C を押してください。"
