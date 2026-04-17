@@ -2083,14 +2083,16 @@ function showToast(msg) {
 function broadcastInstruction() {
   const mission = document.getElementById('ceo-mission').value.trim();
   if (!mission) return;
-  // 企画部: アイデアとしてカンバンへ
+  // 司令塔AI: 戦略カンバンへ
   autoRoute('plan', 'CEO', mission);
-  // リサーチ部: 調査依頼として
+  // リサーチ＆マーケAI: 調査依頼として
   autoRoute('research', 'CEO', `【調査依頼】${mission}`);
-  // 執務部: タスクとして
+  // スケジュール管理AI: タスクとして
   autoRoute('work', 'CEO', mission);
-  // SNS展開部: 投稿の種として下書きへ
-  autoRoute('sns', 'CEO', `【投稿案】${mission}`);
+  // メール秘書AI: 投稿下書きへ
+  autoRoute('sns', 'CEO', `【連絡案】${mission}`);
+  // 思考整理AI: 課題として
+  autoRoute('think', 'CEO', `【整理】${mission}`);
 }
 
 // ==================== 校正部 Gemini連携 ====================
