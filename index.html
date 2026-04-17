@@ -35,7 +35,6 @@
   --dept-work: #4ade80;
   --dept-proof: #fb923c;
   --dept-sns: #f472b6;
-  --dept-integrate: #ec4899;
 }
 
 body {
@@ -889,12 +888,6 @@ body {
     <div class="dept-name" style="color:var(--dept-sns)">SNS展開部</div>
     <div class="dept-desc">X / Instagram / Note の<br>投稿下書きを管理</div>
   </div>
-  <div class="dept-card" data-dept="integrate" onclick="openModal('integrate')">
-    <div class="dept-count">⚙</div>
-    <div class="dept-icon">🔗</div>
-    <div class="dept-name" style="color:var(--dept-integrate)">統合部</div>
-    <div class="dept-desc">Google Sheets・Notion と<br>データを同期・一元管理</div>
-  </div>
 </div>
 
 <!-- ==================== MODALS ==================== -->
@@ -1097,81 +1090,6 @@ body {
   </div>
 </div>
 
-<!-- 統合部 -->
-<div class="modal-overlay" id="modal-integrate">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" style="color:var(--dept-integrate)">🔗 統合部</div>
-      <button class="modal-close" onclick="closeModal('integrate')">✕</button>
-    </div>
-    <div class="modal-body">
-      <!-- 統合部の目的 -->
-      <div style="background:var(--surface2);border:1px solid var(--dept-integrate);border-radius:12px;padding:16px;margin-bottom:20px">
-        <div style="font-size:13px;color:var(--dept-integrate);font-weight:700;margin-bottom:8px">📋 統合部の目的</div>
-        <div style="font-size:13px;color:var(--text);line-height:1.8">
-          <p style="margin-bottom:8px">バーチャルオフィスのすべてのデータをGoogle SheetsとNotionと同期し、チーム全体で一元管理・共有します。</p>
-          <div style="margin-top:12px;color:var(--muted);font-size:12px">
-            <strong style="color:var(--text)">主な職務：</strong><br>
-            • Google Sheets への全データ同期<br>
-            • Notion データベースとの双方向同期<br>
-            • バックアップとデータ管理<br>
-            • 外部ツール連携の統括
-          </div>
-        </div>
-      </div>
-
-      <!-- 同期ステータス -->
-      <div style="background:linear-gradient(135deg, rgba(236,72,153,0.1) 0%, rgba(236,72,153,0.05) 100%);border:1px solid rgba(236,72,153,0.3);border-radius:12px;padding:16px;margin-bottom:20px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <span style="font-size:13px;font-weight:700;color:var(--dept-integrate)">📊 同期ステータス</span>
-          <span id="sync-status" style="font-size:11px;color:var(--muted)">最後の同期: なし</span>
-        </div>
-        <div>
-          <div style="font-size:12px;margin-bottom:8px">Google Sheets: <span id="sheets-status" style="color:var(--muted)">未接続</span></div>
-          <div style="font-size:12px;margin-bottom:8px">Notion: <span id="notion-status" style="color:var(--muted)">未接続</span></div>
-          <div style="font-size:12px">バーチャルオフィス: <span id="vo-status" style="color:var(--dept-work)">✓ 接続中</span></div>
-        </div>
-      </div>
-
-      <!-- 同期操作 -->
-      <div class="section-title">同期操作</div>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
-        <button class="btn btn-integrate" onclick="syncToSheets()" style="width:100%">📊 Google Sheets に同期</button>
-        <button class="btn btn-integrate" onclick="syncToNotion()" style="width:100%">🔗 Notion に同期</button>
-        <button class="btn btn-integrate" onclick="syncFromNotion()" style="width:100%">⬇ Notion から取得</button>
-        <button class="btn btn-ghost" onclick="fullSync()" style="width:100%;border-color:var(--dept-integrate);color:var(--dept-integrate)">🔄 完全同期</button>
-      </div>
-
-      <!-- APIキー管理 -->
-      <div class="section-title">APIキー管理</div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div>
-          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Google Sheets ID</div>
-          <input class="input" id="sheets-id" placeholder="スプレッドシート ID を入力" style="font-size:12px">
-        </div>
-        <div>
-          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Notion API Key</div>
-          <div style="display:flex;gap:6px">
-            <input class="input" id="notion-key" type="password" placeholder="sk-..." style="font-size:12px;flex:1">
-            <button class="btn btn-ghost" onclick="toggleNotionKeyVisibility()" style="padding:6px 12px;font-size:11px">表示</button>
-          </div>
-        </div>
-        <div>
-          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Notion Database ID</div>
-          <input class="input" id="notion-db" placeholder="データベース ID を入力" style="font-size:12px">
-        </div>
-        <button class="btn btn-ghost" onclick="saveIntegrationSettings()" style="width:100%;border-color:var(--dept-integrate);color:var(--dept-integrate);margin-top:8px">⚙ 設定を保存</button>
-      </div>
-
-      <!-- ログ表示 -->
-      <div class="section-title" style="margin-top:20px">同期ログ</div>
-      <div id="sync-log" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;max-height:150px;overflow-y:auto;font-size:11px;font-family:monospace;color:var(--muted)">
-        <div>同期ログがここに表示されます</div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- SNS展開部 -->
 <div class="modal-overlay" id="modal-sns">
   <div class="modal">
@@ -1199,6 +1117,35 @@ body {
       </div>
       <div class="section-title">保存済み下書き</div>
       <div class="sns-drafts" id="sns-drafts"></div>
+
+      <!-- Notion連携 -->
+      <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px">
+            <span style="font-size:18px">◻</span> Notion SNSフォルダ連携
+          </div>
+          <span id="notion-sync-status" style="font-size:11px;color:var(--muted)">未接続</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Notion API Key</div>
+            <div style="display:flex;gap:6px">
+              <input class="input" id="notion-key" type="password" placeholder="secret_..." style="font-size:12px;flex:1">
+              <button class="btn btn-ghost" onclick="toggleNotionKey()" style="padding:6px 10px;font-size:11px">表示</button>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:4px">SNSフォルダ Database ID</div>
+            <input class="input" id="notion-db" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" style="font-size:12px">
+          </div>
+          <button class="btn btn-ghost" onclick="saveNotionSettings()" style="border-color:var(--dept-sns);color:var(--dept-sns)">設定を保存</button>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sns" onclick="syncSNSToNotion()" style="flex:1">↑ Notionへ同期</button>
+          <button class="btn btn-ghost" onclick="syncSNSFromNotion()" style="flex:1;border-color:var(--dept-sns);color:var(--dept-sns)">↓ Notionから取得</button>
+        </div>
+        <div id="notion-log" style="margin-top:10px;font-size:12px;color:var(--muted);min-height:18px"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -1603,8 +1550,7 @@ function autoSaveResearchData() {
 }
 
 function openSheetsSettings() {
-  openModal('integrate');
-  document.getElementById('sheets-id').focus();
+  openModal('research');
 }
 
 // ==================== 執務部 - POMODORO ====================
@@ -1931,144 +1877,95 @@ function escHtml(s) {
     .replace(/"/g,'&quot;');
 }
 
-// ==================== 統合部 ====================
-const integrationSettings = DB.load('vo_integration', {
-  sheets_id: '',
-  notion_key: '',
-  notion_db: '',
-  auto_sync: true,
-  sync_interval: 60
-});
+// ==================== SNS部 Notion連携 ====================
+const notionSettings = DB.load('vo_notion', { key: '', db: '' });
 
-let sync_log_messages = [];
-
-function addSyncLog(msg) {
-  const timestamp = new Date().toLocaleTimeString('ja-JP');
-  sync_log_messages.unshift(`[${timestamp}] ${msg}`);
-  if (sync_log_messages.length > 50) sync_log_messages.pop();
-  
-  const logEl = document.getElementById('sync-log');
-  if (logEl) {
-    logEl.innerHTML = sync_log_messages.map(m => `<div>${escHtml(m)}</div>`).join('');
+function saveNotionSettings() {
+  notionSettings.key = document.getElementById('notion-key').value.trim();
+  notionSettings.db  = document.getElementById('notion-db').value.trim();
+  DB.save('vo_notion', notionSettings);
+  setNotionLog('✅ 設定を保存しました');
+  if (notionSettings.key && notionSettings.db) {
+    document.getElementById('notion-sync-status').textContent = '✓ 設定済み';
+    document.getElementById('notion-sync-status').style.color = 'var(--dept-work)';
   }
 }
 
-function syncToSheets() {
-  addSyncLog('📊 Google Sheets への同期を開始...');
-  const sheets_id = document.getElementById('sheets-id').value.trim();
-  if (!sheets_id) {
-    addSyncLog('❌ スプレッドシート ID が設定されていません');
-    addSyncLog('💡 統合部の「Google Sheets ID」に ID を入力して「設定を保存」してください');
-    return;
-  }
-  
-  // ローカルバックエンドサーバーに同期リクエストを送信
-  addSyncLog('✓ バックエンドサーバーに同期リクエスト送信...');
-  
-  fetch('http://localhost:8888/api/sync-research-to-sheets', {
+function toggleNotionKey() {
+  const el = document.getElementById('notion-key');
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+
+function setNotionLog(msg) {
+  const el = document.getElementById('notion-log');
+  if (el) el.textContent = msg;
+}
+
+function syncSNSToNotion() {
+  const key = notionSettings.key || document.getElementById('notion-key').value.trim();
+  const db  = notionSettings.db  || document.getElementById('notion-db').value.trim();
+  if (!key || !db) { setNotionLog('⚠ APIキーとDatabase IDを設定してください'); return; }
+  if (!drafts.length) { setNotionLog('⚠ 同期する下書きがありません'); return; }
+  setNotionLog('📤 Notionへ同期中...');
+
+  fetch(APPS_SCRIPT_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      sheets_id: sheets_id,
-      research: research
-    })
+    body: JSON.stringify({ action: 'notion_sync', notion_key: key, notion_db: db, drafts })
   })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      addSyncLog(data.message);
-      document.getElementById('sheets-status').textContent = '✓ 接続中';
-      document.getElementById('sheets-status').style.color = 'var(--dept-work)';
-      updateSyncTimestamp();
+  .then(r => r.json())
+  .then(res => {
+    if (res.success) {
+      setNotionLog(`✅ ${res.count}件をNotionのSNSフォルダに同期しました`);
+      document.getElementById('notion-sync-status').textContent = '✓ 同期済み';
+      document.getElementById('notion-sync-status').style.color = 'var(--dept-work)';
     } else {
-      addSyncLog('❌ ' + data.message);
+      setNotionLog('❌ ' + (res.error || '同期に失敗しました'));
     }
   })
-  .catch(err => {
-    console.error('同期エラー:', err);
-    addSyncLog(`❌ サーバー接続エラー: ${err.message}`);
-    addSyncLog('💡 バックエンドサーバーが起動しているか確認してください: python3 backend_server.py');
-  });
+  .catch(err => setNotionLog('❌ 接続エラー: ' + err.message));
 }
 
-function syncToNotion() {
-  addSyncLog('🔗 Notion への同期を開始...');
-  const notion_key = document.getElementById('notion-key').value.trim();
-  if (!notion_key) {
-    addSyncLog('❌ Notion API Key が設定されていません');
-    return;
-  }
-  addSyncLog('✓ データを Notion に送信中...');
-  setTimeout(() => {
-    addSyncLog('✅ Notion に同期完了！');
-    document.getElementById('notion-status').textContent = '✓ 接続中';
-    document.getElementById('notion-status').style.color = 'var(--dept-work)';
-    updateSyncTimestamp();
-  }, 1500);
-}
+function syncSNSFromNotion() {
+  const key = notionSettings.key || document.getElementById('notion-key').value.trim();
+  const db  = notionSettings.db  || document.getElementById('notion-db').value.trim();
+  if (!key || !db) { setNotionLog('⚠ APIキーとDatabase IDを設定してください'); return; }
+  setNotionLog('⬇ Notionから取得中...');
 
-function syncFromNotion() {
-  addSyncLog('⬇ Notion からデータを取得中...');
-  const notion_key = document.getElementById('notion-key').value.trim();
-  if (!notion_key) {
-    addSyncLog('❌ Notion API Key が設定されていません');
-    return;
-  }
-  setTimeout(() => {
-    addSyncLog('✅ Notion からデータを取得完了！');
-    updateSyncTimestamp();
-  }, 1200);
-}
-
-function fullSync() {
-  addSyncLog('🔄 完全同期を開始...');
-  addSyncLog('📊 Google Sheets に同期中...');
-  setTimeout(() => {
-    addSyncLog('✓ Google Sheets 同期完了');
-    addSyncLog('🔗 Notion に同期中...');
-    setTimeout(() => {
-      addSyncLog('✓ Notion 同期完了');
-      addSyncLog('⬇ Notion からデータ取得中...');
-      setTimeout(() => {
-        addSyncLog('✓ Notion 取得完了');
-        addSyncLog('✅ 完全同期完了！');
-        document.getElementById('sheets-status').textContent = '✓ 接続中';
-        document.getElementById('notion-status').textContent = '✓ 接続中';
-        document.getElementById('sheets-status').style.color = 'var(--dept-work)';
-        document.getElementById('notion-status').style.color = 'var(--dept-work)';
-        updateSyncTimestamp();
-      }, 1000);
-    }, 1500);
-  }, 1500);
-}
-
-function toggleNotionKeyVisibility() {
-  const input = document.getElementById('notion-key');
-  input.type = input.type === 'password' ? 'text' : 'password';
-}
-
-function saveIntegrationSettings() {
-  integrationSettings.sheets_id = document.getElementById('sheets-id').value.trim();
-  integrationSettings.notion_key = document.getElementById('notion-key').value.trim();
-  integrationSettings.notion_db = document.getElementById('notion-db').value.trim();
-  
-  DB.save('vo_integration', integrationSettings);
-  addSyncLog('⚙ 設定を保存しました');
-}
-
-function updateSyncTimestamp() {
-  const now = new Date();
-  document.getElementById('sync-status').textContent = `最後の同期: ${now.toLocaleTimeString('ja-JP')}`;
-}
-
-// 統合部データを復元
-if (integrationSettings.sheets_id) {
-  setTimeout(() => {
-    if (document.getElementById('sheets-id')) {
-      document.getElementById('sheets-id').value = integrationSettings.sheets_id;
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({ action: 'notion_fetch', notion_key: key, notion_db: db })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.success && res.drafts) {
+      res.drafts.forEach(d => {
+        if (!drafts.find(x => x.notion_id === d.notion_id)) drafts.unshift(d);
+      });
+      DB.save('vo_drafts', drafts);
+      renderDrafts();
+      updateStats();
+      setNotionLog(`✅ ${res.drafts.length}件をNotionから取得しました`);
+    } else {
+      setNotionLog('❌ ' + (res.error || '取得に失敗しました'));
     }
-  }, 500);
+  })
+  .catch(err => setNotionLog('❌ 接続エラー: ' + err.message));
 }
+
+// 設定を復元
+setTimeout(() => {
+  if (notionSettings.key) {
+    const keyEl = document.getElementById('notion-key');
+    const dbEl  = document.getElementById('notion-db');
+    if (keyEl) keyEl.value = notionSettings.key;
+    if (dbEl)  dbEl.value  = notionSettings.db;
+    const statusEl = document.getElementById('notion-sync-status');
+    if (statusEl && notionSettings.key && notionSettings.db) {
+      statusEl.textContent = '✓ 設定済み';
+      statusEl.style.color = 'var(--dept-work)';
+    }
+  }
+}, 300);
 
 // リサーチデータの自動保存機能
 function autoSaveResearchData() {
