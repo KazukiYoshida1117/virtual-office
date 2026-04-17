@@ -2504,7 +2504,7 @@ function saveGmailScriptUrl() {
   const url = document.getElementById('gmail-script-url').value.trim();
   if (!url) return;
   DB.save('vo_gmail_script_url', url);
-  showLog('sns', '✅ Gmail Apps Script URL を保存しました');
+  showToast('✅ Gmail Apps Script URL を保存しました');
 }
 
 function getGmailScriptUrl() {
@@ -2513,7 +2513,7 @@ function getGmailScriptUrl() {
 
 async function fetchGmailInbox() {
   const url = getGmailScriptUrl();
-  if (!url) { showLog('sns', '⚠ Apps Script URL を設定してください'); return; }
+  if (!url) { showToast('⚠ Apps Script URL を設定してください'); return; }
   const btn = document.getElementById('gmail-fetch-btn');
   btn.textContent = '⏳ 取得中...';
   btn.disabled = true;
@@ -2527,7 +2527,7 @@ async function fetchGmailInbox() {
     renderGmailThreads(data.threads || []);
     document.getElementById('gmail-inbox').style.display = '';
   } catch (e) {
-    showLog('sns', '❌ Gmail取得エラー: ' + e.message);
+    showToast('❌ Gmail取得エラー: ' + e.message);
   } finally {
     btn.textContent = '📥 受信箱を取得';
     btn.disabled = false;
@@ -2564,7 +2564,7 @@ function selectGmailThread(idx) {
 async function generateEmailReply() {
   if (!gmailSelectedThread) return;
   const apiKey = DB.load('vo_gemini_key', '');
-  if (!apiKey) { showLog('sns', '⚠ Gemini APIキーが未設定です（設定パネルで入力してください）'); return; }
+  if (!apiKey) { showToast('⚠ Gemini APIキーが未設定です（設定パネルで入力してください）'); return; }
   const replySection = document.getElementById('gmail-reply-section');
   const replyText    = document.getElementById('gmail-reply-text');
   replySection.style.display = '';
@@ -2601,8 +2601,8 @@ ${gmailSelectedThread.body}
 
 async function createGmailDraft() {
   const url = getGmailScriptUrl();
-  if (!url) { showLog('sns', '⚠ Apps Script URL を設定してください'); return; }
-  if (!gmailSelectedThread) { showLog('sns', '⚠ 返信元メールが選択されていません'); return; }
+  if (!url) { showToast('⚠ Apps Script URL を設定してください'); return; }
+  if (!gmailSelectedThread) { showToast('⚠ 返信元メールが選択されていません'); return; }
   const body    = document.getElementById('gmail-reply-text').value.trim();
   const statusEl = document.getElementById('gmail-draft-status');
   if (!body) { statusEl.textContent = '⚠ 返信本文を入力してください'; return; }
