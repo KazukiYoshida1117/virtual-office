@@ -1069,6 +1069,37 @@ body {
     </div>
     <div class="modal-body">
       <div id="log-proof" style="display:none;background:rgba(251,146,60,0.07);border:1px solid var(--dept-proof);border-radius:12px;padding:14px;margin-bottom:16px"></div>
+
+      <!-- PDF読み込み -->
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px">
+        <div style="font-size:12px;font-weight:700;color:var(--dept-proof);margin-bottom:10px">📄 PDF読み込み・AI要約</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+          <label style="background:var(--surface);border:1px solid var(--dept-proof);color:var(--dept-proof);border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer">
+            📂 PDFを選択
+            <input type="file" id="pdf-input" accept=".pdf" style="display:none" onchange="loadPDF(this)">
+          </label>
+          <span id="pdf-filename" style="font-size:12px;color:var(--muted)">ファイル未選択</span>
+        </div>
+        <div id="pdf-progress" style="display:none;font-size:12px;color:var(--muted);margin-bottom:8px"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-proof" onclick="summarizeWithGemini('summary')" style="font-size:12px">🤖 要約する</button>
+          <button class="btn btn-proof" onclick="summarizeWithGemini('structure')" style="font-size:12px">📋 構成を分析</button>
+          <button class="btn btn-proof" onclick="summarizeWithGemini('both')" style="font-size:12px">✨ 要約＋構成</button>
+        </div>
+        <!-- Gemini APIキー設定 -->
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:6px;align-items:center">
+          <input class="input" id="gemini-key" type="password" placeholder="Gemini API Key" style="font-size:11px;flex:1">
+          <button class="btn btn-ghost" onclick="saveGeminiKey()" style="font-size:11px;padding:6px 10px">保存</button>
+          <button class="btn btn-ghost" onclick="toggleGeminiKey()" style="font-size:11px;padding:6px 10px">表示</button>
+        </div>
+      </div>
+
+      <!-- AI結果表示 -->
+      <div id="ai-result" style="display:none;background:linear-gradient(135deg,rgba(251,146,60,0.08),rgba(251,146,60,0.03));border:1px solid var(--dept-proof);border-radius:12px;padding:16px;margin-bottom:16px">
+        <div style="font-size:11px;font-weight:700;color:var(--dept-proof);margin-bottom:8px">🤖 AI分析結果</div>
+        <div id="ai-result-text" style="font-size:13px;line-height:1.8;white-space:pre-wrap;color:var(--text)"></div>
+      </div>
+
       <div class="proof-stats">
         <div class="proof-stat"><div class="proof-stat-num" id="p-chars">0</div><div class="proof-stat-label">文字数</div></div>
         <div class="proof-stat"><div class="proof-stat-num" id="p-nospace">0</div><div class="proof-stat-label">スペース除く</div></div>
@@ -1078,8 +1109,8 @@ body {
         <div class="proof-stat"><div class="proof-stat-num" id="p-read">0分</div><div class="proof-stat-label">読了時間</div></div>
       </div>
       <textarea class="textarea" id="proof-text"
-        placeholder="ここに文章を貼り付けてください…"
-        style="min-height:220px; margin-bottom:0"
+        placeholder="ここに文章を貼り付けてください（PDFを読み込むと自動で入力されます）…"
+        style="min-height:180px; margin-bottom:0"
         oninput="analyzeText()"></textarea>
       <div style="display:flex;gap:8px;margin-top:8px">
         <button class="btn btn-proof" onclick="copyText()">コピー</button>
@@ -1867,6 +1898,107 @@ function broadcastInstruction() {
   // SNS展開部: 投稿の種として下書きへ
   autoRoute('sns', 'CEO', `【投稿案】${mission}`);
 }
+
+// ==================== 校正部 Gemini連携 ====================
+let geminiKey = DB.load('vo_gemini_key', '');
+
+function saveGeminiKey() {
+  geminiKey = document.getElementById('gemini-key').value.trim();
+  DB.save('vo_gemini_key', geminiKey);
+  showToast('Gemini APIキーを保存しました');
+}
+
+function toggleGeminiKey() {
+  const el = document.getElementById('gemini-key');
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+
+async function loadPDF(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('pdf-filename').textContent = file.name;
+  document.getElementById('pdf-progress').style.display = 'block';
+  document.getElementById('pdf-progress').textContent = '📄 PDFを読み込み中...';
+
+  try {
+    if (!window.pdfjsLib) {
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let text = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      document.getElementById('pdf-progress').textContent = `📄 ${i}/${pdf.numPages}ページ読み込み中...`;
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items.map(item => item.str).join(' ') + '\n';
+    }
+    document.getElementById('proof-text').value = text.trim();
+    analyzeText();
+    document.getElementById('pdf-progress').textContent = `✅ ${pdf.numPages}ページ読み込み完了`;
+  } catch(e) {
+    document.getElementById('pdf-progress').textContent = '❌ 読み込みエラー: ' + e.message;
+  }
+}
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+async function summarizeWithGemini(mode) {
+  const key = geminiKey || document.getElementById('gemini-key').value.trim();
+  if (!key) { showToast('Gemini APIキーを入力して保存してください'); return; }
+  const text = document.getElementById('proof-text').value.trim();
+  if (!text) { showToast('先にPDFを読み込むか、テキストを入力してください'); return; }
+
+  const prompts = {
+    summary: `以下の文章を日本語で簡潔に要約してください。重要なポイントを箇条書きでまとめてください。\n\n${text.substring(0, 8000)}`,
+    structure: `以下の文章の構成を分析して、章立て・見出し・論理展開を日本語でまとめてください。\n\n${text.substring(0, 8000)}`,
+    both: `以下の文章について、①要約（箇条書き）と②構成分析を日本語でまとめてください。\n\n${text.substring(0, 8000)}`
+  };
+
+  const resultEl = document.getElementById('ai-result');
+  const resultText = document.getElementById('ai-result-text');
+  resultEl.style.display = 'block';
+  resultText.textContent = '🤖 Geminiが分析中...';
+
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompts[mode] }] }] })
+      }
+    );
+    const data = await res.json();
+    if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+      resultText.textContent = data.candidates[0].content.parts[0].text;
+    } else if (data.error) {
+      resultText.textContent = '❌ エラー: ' + data.error.message;
+    } else {
+      resultText.textContent = '❌ 応答を取得できませんでした';
+    }
+  } catch(e) {
+    resultText.textContent = '❌ 通信エラー: ' + e.message;
+  }
+}
+
+// Geminiキーを復元
+setTimeout(() => {
+  if (geminiKey) {
+    const el = document.getElementById('gemini-key');
+    if (el) el.value = geminiKey;
+  }
+}, 300);
 
 // ==================== UTILS ====================
 function escHtml(s) {
