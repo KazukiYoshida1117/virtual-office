@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Virtual Office</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #22263a;
+  --border: #2e3250;
+  --gold: #f5c842;
+  --gold2: #e6b800;
+  --text: #e8eaf0;
+  --muted: #7a7f9a;
+  --dept-plan: #a78bfa;
+  --dept-research: #38bdf8;
+  --dept-work: #4ade80;
+  --dept-proof: #fb923c;
+  --dept-sns: #f472b6;
+}
+
+body {
+  font-family: -apple-system, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: linear-gradient(135deg, #0d1b2a 0%, #1a1d27 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+}
+
+.header-clock {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.header-date {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ===== CEO PANEL ===== */
+.ceo-panel {
+  background: linear-gradient(135deg, #1a1d27 0%, #1e2235 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.ceo-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.ceo-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f5c842, #e6b800);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  border: 3px solid var(--gold);
+  box-shadow: 0 0 20px rgba(245,200,66,0.3);
+  cursor: pointer;
+  user-select: none;
+}
+
+.ceo-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: var(--gold);
+  color: #000;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.ceo-info { flex: 1; }
+
+.ceo-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.ceo-mission-label {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+
+.ceo-mission-input {
+  width: 100%;
+  max-width: 480px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.ceo-mission-input:focus { border-color: var(--gold); }
+
+.ceo-stats {
+  display: flex;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.stat-box {
+  text-align: center;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 18px;
+  min-width: 70px;
+}
+
+.stat-num {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ===== FLOOR PLAN ===== */
+.floor-label {
+  padding: 20px 24px 10px;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.floor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 0 24px 24px;
+}
+
+.dept-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px 20px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.dept-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 16px 16px 0 0;
+}
+
+.dept-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.dept-card[data-dept="plan"]::before   { background: var(--dept-plan); }
+.dept-card[data-dept="research"]::before { background: var(--dept-research); }
+.dept-card[data-dept="work"]::before   { background: var(--dept-work); }
+.dept-card[data-dept="proof"]::before  { background: var(--dept-proof); }
+.dept-card[data-dept="sns"]::before    { background: var(--dept-sns); }
+
+.dept-card:hover[data-dept="plan"]    { border-color: var(--dept-plan); }
+.dept-card:hover[data-dept="research"]{ border-color: var(--dept-research); }
+.dept-card:hover[data-dept="work"]    { border-color: var(--dept-work); }
+.dept-card:hover[data-dept="proof"]   { border-color: var(--dept-proof); }
+.dept-card:hover[data-dept="sns"]     { border-color: var(--dept-sns); }
+
+.dept-icon { font-size: 36px; margin-bottom: 12px; }
+.dept-name { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.dept-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+.dept-count {
+  position: absolute;
+  top: 14px; right: 14px;
+  background: var(--surface2);
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: modalIn 0.25s ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(12px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-close {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transition: color 0.2s, background 0.2s;
+}
+
+.modal-close:hover { color: var(--text); background: var(--border); }
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* ===== COMMON COMPONENTS ===== */
+.btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.btn:active { transform: scale(0.97); }
+.btn:hover  { opacity: 0.85; }
+
+.btn-gold   { background: var(--gold); color: #000; }
+.btn-plan   { background: var(--dept-plan); color: #fff; }
+.btn-research{ background: var(--dept-research); color: #000; }
+.btn-work   { background: var(--dept-work); color: #000; }
+.btn-proof  { background: var(--dept-proof); color: #fff; }
+.btn-sns    { background: var(--dept-sns); color: #fff; }
+.btn-ghost  { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+
+.input, .textarea {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+.input:focus, .textarea:focus { border-color: var(--gold); }
+.textarea { resize: vertical; min-height: 100px; width: 100%; }
+.input { width: 100%; }
+
+.row { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+.section-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+.section-title:first-child { margin-top: 0; }
+
+/* ===== 企画部 - KANBAN ===== */
+.kanban {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.kanban-col {
+  background: var(--surface2);
+  border-radius: 12px;
+  padding: 14px;
+  min-height: 200px;
+}
+
+.kanban-col-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kanban-col-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+
+.kanban-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  cursor: grab;
+  position: relative;
+  transition: box-shadow 0.2s;
+}
+.kanban-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+
+.kanban-card-del {
+  position: absolute;
+  top: 6px; right: 6px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.kanban-card:hover .kanban-card-del { opacity: 1; }
+
+/* ===== リサーチ部 ===== */
+.research-list { display: flex; flex-direction: column; gap: 10px; }
+
+.research-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.research-item-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.research-item-body { flex: 1; }
+.research-item-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.research-item-url   {
+  font-size: 12px;
+  color: var(--dept-research);
+  margin-bottom: 6px;
+  word-break: break-all;
+  text-decoration: none;
+}
+.research-item-url:hover { text-decoration: underline; }
+.research-item-memo  { font-size: 13px; color: var(--muted); white-space: pre-wrap; }
+
+.tag {
+  display: inline-block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 11px;
+  color: var(--muted);
+  margin: 2px;
+}
+
+/* ===== 執務部 - POMODORO ===== */
+.pomodoro-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.pomodoro-ring {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin-bottom: 16px;
+}
+
+.pomodoro-ring svg {
+  position: absolute;
+  top: 0; left: 0;
+  transform: rotate(-90deg);
+}
+
+.pomodoro-ring-bg { fill: none; stroke: var(--surface2); stroke-width: 8; }
+.pomodoro-ring-fg { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+
+.pomodoro-time {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.pomodoro-mode {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 2px;
+}
+
+.pomodoro-controls { display: flex; gap: 10px; }
+.pomodoro-count { margin-top: 10px; font-size: 13px; color: var(--muted); }
+
+.work-task-list { display: flex; flex-direction: column; gap: 8px; }
+
+.work-task {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+.work-task.done { opacity: 0.45; }
+.work-task.done .work-task-text { text-decoration: line-through; }
+
+.work-task-check {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--dept-work);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 11px;
+  transition: background 0.2s;
+}
+
+.work-task.done .work-task-check {
+  background: var(--dept-work);
+  border-color: var(--dept-work);
+  color: #000;
+}
+
+.work-task-text { flex: 1; }
+
+.work-task-del {
+  background: none; border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 15px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.work-task:hover .work-task-del { opacity: 1; }
+
+/* ===== 校正部 ===== */
+.proof-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.proof-stat {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 16px;
+  text-align: center;
+}
+
+.proof-stat-num {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--dept-proof);
+}
+
+.proof-stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.proof-alerts { margin-top: 16px; display: flex; flex-direction: column; gap: 6px; }
+
+.proof-alert {
+  background: rgba(251,146,60,0.1);
+  border: 1px solid rgba(251,146,60,0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--dept-proof);
+}
+
+/* ===== SNS部 ===== */
+.sns-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.sns-tab {
+  padding: 7px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sns-tab.active {
+  background: var(--dept-sns);
+  border-color: var(--dept-sns);
+  color: #fff;
+}
+
+.sns-composer {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.sns-char-count {
+  text-align: right;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.sns-char-count.over { color: #ff4d4f; }
+
+.sns-drafts { display: flex; flex-direction: column; gap: 10px; }
+
+.draft-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.draft-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.draft-platform {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.draft-date { font-size: 11px; color: var(--muted); }
+
+.draft-text { font-size: 14px; line-height: 1.6; white-space: pre-wrap; }
+
+.draft-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .ceo-panel { flex-wrap: wrap; }
+  .ceo-stats  { flex-wrap: wrap; }
+  .kanban     { grid-template-columns: 1fr; }
+  .floor-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-title">🏢 My Virtual Office</div>
+  <div style="text-align:right">
+    <div class="header-clock" id="clock">--:--:--</div>
+    <div class="header-date" id="header-date"></div>
+  </div>
+</header>
+
+<!-- CEO PANEL -->
+<section class="ceo-panel">
+  <div class="ceo-avatar-wrap">
+    <div class="ceo-avatar" id="ceo-emoji" title="アバターを変更">👔</div>
+    <span class="ceo-badge">CEO</span>
+  </div>
+  <div class="ceo-info">
+    <div class="ceo-name" id="ceo-name-display">かずき社長</div>
+    <div class="ceo-mission-label">今日のミッション</div>
+    <input class="ceo-mission-input" id="ceo-mission" type="text"
+      placeholder="今日達成したいことを入力…" maxlength="80">
+  </div>
+  <div class="ceo-stats">
+    <div class="stat-box">
+      <div class="stat-num" id="stat-ideas">0</div>
+      <div class="stat-label">アイデア</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" id="stat-research">0</div>
+      <div class="stat-label">リサーチ</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" id="stat-tasks">0</div>
+      <div class="stat-label">タスク</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" id="stat-drafts">0</div>
+      <div class="stat-label">下書き</div>
+    </div>
+  </div>
+</section>
+
+<!-- FLOOR PLAN -->
+<div class="floor-label">OFFICE FLOOR — 各部署をクリックして入室</div>
+<div class="floor-grid">
+  <div class="dept-card" data-dept="plan" onclick="openModal('plan')">
+    <div class="dept-count" id="count-plan">0件</div>
+    <div class="dept-icon">💡</div>
+    <div class="dept-name" style="color:var(--dept-plan)">企画部</div>
+    <div class="dept-desc">アイデアをカンバンで管理<br>進捗ステータスを可視化</div>
+  </div>
+  <div class="dept-card" data-dept="research" onclick="openModal('research')">
+    <div class="dept-count" id="count-research">0件</div>
+    <div class="dept-icon">🔬</div>
+    <div class="dept-name" style="color:var(--dept-research)">リサーチ部</div>
+    <div class="dept-desc">URL・メモ・キーワードを<br>一元収集・管理</div>
+  </div>
+  <div class="dept-card" data-dept="work" onclick="openModal('work')">
+    <div class="dept-count" id="count-work">0件</div>
+    <div class="dept-icon">⚡</div>
+    <div class="dept-name" style="color:var(--dept-work)">執務部</div>
+    <div class="dept-desc">ポモドーロタイマーで<br>集中作業・タスク管理</div>
+  </div>
+  <div class="dept-card" data-dept="proof" onclick="openModal('proof')">
+    <div class="dept-count" id="count-proof">—</div>
+    <div class="dept-icon">✍️</div>
+    <div class="dept-name" style="color:var(--dept-proof)">校正部</div>
+    <div class="dept-desc">文章を貼って文字数確認<br>読みやすさチェック</div>
+  </div>
+  <div class="dept-card" data-dept="sns" onclick="openModal('sns')">
+    <div class="dept-count" id="count-sns">0件</div>
+    <div class="dept-icon">📣</div>
+    <div class="dept-name" style="color:var(--dept-sns)">SNS展開部</div>
+    <div class="dept-desc">X / Instagram / Note の<br>投稿下書きを管理</div>
+  </div>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- 企画部 -->
+<div class="modal-overlay" id="modal-plan">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--dept-plan)">💡 企画部</div>
+      <button class="modal-close" onclick="closeModal('plan')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <input class="input" id="plan-input" placeholder="アイデアを入力…" style="flex:1" maxlength="100">
+        <button class="btn btn-plan" onclick="addIdea()">追加</button>
+      </div>
+      <div class="kanban" id="kanban-board">
+        <div class="kanban-col" id="col-idea">
+          <div class="kanban-col-title">
+            <span class="kanban-col-dot" style="background:var(--dept-plan)"></span>アイデア
+          </div>
+        </div>
+        <div class="kanban-col" id="col-wip">
+          <div class="kanban-col-title">
+            <span class="kanban-col-dot" style="background:var(--gold)"></span>進行中
+          </div>
+        </div>
+        <div class="kanban-col" id="col-done">
+          <div class="kanban-col-title">
+            <span class="kanban-col-dot" style="background:var(--dept-work)"></span>完了
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- リサーチ部 -->
+<div class="modal-overlay" id="modal-research">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--dept-research)">🔬 リサーチ部</div>
+      <button class="modal-close" onclick="closeModal('research')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="section-title">新規リサーチ追加</div>
+      <div class="row"><input class="input" id="r-title" placeholder="タイトル" style="flex:1"></div>
+      <div class="row"><input class="input" id="r-url" placeholder="URL（任意）" style="flex:1" type="url"></div>
+      <textarea class="textarea" id="r-memo" placeholder="メモ・要点…" style="margin-bottom:8px"></textarea>
+      <div class="row">
+        <input class="input" id="r-tag" placeholder="タグ（カンマ区切り）" style="flex:1">
+        <button class="btn btn-research" onclick="addResearch()" style="color:#000">保存</button>
+      </div>
+      <div class="section-title">リサーチ一覧</div>
+      <div class="research-list" id="research-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 執務部 -->
+<div class="modal-overlay" id="modal-work">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--dept-work)">⚡ 執務部</div>
+      <button class="modal-close" onclick="closeModal('work')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="pomodoro-wrap">
+        <div class="pomodoro-ring">
+          <svg viewBox="0 0 180 180" width="180" height="180">
+            <circle class="pomodoro-ring-bg" cx="90" cy="90" r="82"/>
+            <circle class="pomodoro-ring-fg" id="pomo-arc" cx="90" cy="90" r="82"
+              stroke="var(--dept-work)"
+              stroke-dasharray="515"
+              stroke-dashoffset="0"/>
+          </svg>
+          <div class="pomodoro-time">
+            <span id="pomo-display">25:00</span>
+            <span class="pomodoro-mode" id="pomo-mode">集中タイム</span>
+          </div>
+        </div>
+        <div class="pomodoro-controls">
+          <button class="btn btn-work" id="pomo-btn" onclick="togglePomo()" style="color:#000">▶ スタート</button>
+          <button class="btn btn-ghost" onclick="resetPomo()">リセット</button>
+        </div>
+        <div class="pomodoro-count" id="pomo-count">完了セット: 0</div>
+      </div>
+
+      <div class="section-title">今日のタスク</div>
+      <div class="row">
+        <input class="input" id="task-input" placeholder="タスクを入力…" style="flex:1" maxlength="80">
+        <button class="btn btn-work" onclick="addTask()" style="color:#000">追加</button>
+      </div>
+      <div class="work-task-list" id="task-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 校正部 -->
+<div class="modal-overlay" id="modal-proof">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--dept-proof)">✍️ 校正部</div>
+      <button class="modal-close" onclick="closeModal('proof')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="proof-stats">
+        <div class="proof-stat"><div class="proof-stat-num" id="p-chars">0</div><div class="proof-stat-label">文字数</div></div>
+        <div class="proof-stat"><div class="proof-stat-num" id="p-nospace">0</div><div class="proof-stat-label">スペース除く</div></div>
+        <div class="proof-stat"><div class="proof-stat-num" id="p-lines">0</div><div class="proof-stat-label">行数</div></div>
+        <div class="proof-stat"><div class="proof-stat-num" id="p-words">0</div><div class="proof-stat-label">単語数</div></div>
+        <div class="proof-stat"><div class="proof-stat-num" id="p-sents">0</div><div class="proof-stat-label">文数</div></div>
+        <div class="proof-stat"><div class="proof-stat-num" id="p-read">0分</div><div class="proof-stat-label">読了時間</div></div>
+      </div>
+      <textarea class="textarea" id="proof-text"
+        placeholder="ここに文章を貼り付けてください…"
+        style="min-height:220px; margin-bottom:0"
+        oninput="analyzeText()"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-proof" onclick="copyText()">コピー</button>
+        <button class="btn btn-ghost" onclick="clearProof()">クリア</button>
+      </div>
+      <div class="proof-alerts" id="proof-alerts"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SNS展開部 -->
+<div class="modal-overlay" id="modal-sns">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--dept-sns)">📣 SNS展開部</div>
+      <button class="modal-close" onclick="closeModal('sns')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="sns-tabs">
+        <button class="sns-tab active" onclick="setSnsTab('X')"       id="tab-X">𝕏 (Twitter)</button>
+        <button class="sns-tab"        onclick="setSnsTab('Instagram')" id="tab-Instagram">📸 Instagram</button>
+        <button class="sns-tab"        onclick="setSnsTab('Note')"      id="tab-Note">📝 Note</button>
+      </div>
+      <div class="sns-composer">
+        <textarea class="textarea" id="sns-text"
+          placeholder="投稿内容を入力…"
+          style="min-height:120px; margin-bottom:0"
+          oninput="updateSnsCount()"></textarea>
+        <div class="sns-char-count" id="sns-count">0 / 280</div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn btn-sns" onclick="saveDraft()">下書き保存</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('sns-text').value='';updateSnsCount()">クリア</button>
+        </div>
+      </div>
+      <div class="section-title">保存済み下書き</div>
+      <div class="sns-drafts" id="sns-drafts"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== STATE ====================
+const DB = {
+  load: (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+  save: (k, v) => localStorage.setItem(k, JSON.stringify(v))
+};
+
+let ideas     = DB.load('vo_ideas',    []);
+let research  = DB.load('vo_research', []);
+let tasks     = DB.load('vo_tasks',    []);
+let drafts    = DB.load('vo_drafts',   []);
+let ceoMission= DB.load('vo_mission',  '');
+let snsTab    = 'X';
+
+// ==================== CLOCK ====================
+function updateClock() {
+  const n = new Date();
+  document.getElementById('clock').textContent =
+    String(n.getHours()).padStart(2,'0') + ':' +
+    String(n.getMinutes()).padStart(2,'0') + ':' +
+    String(n.getSeconds()).padStart(2,'0');
+  const days = ['日','月','火','水','木','金','土'];
+  document.getElementById('header-date').textContent =
+    `${n.getFullYear()}年${n.getMonth()+1}月${n.getDate()}日（${days[n.getDay()]}）`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ==================== CEO ====================
+const missionEl = document.getElementById('ceo-mission');
+missionEl.value = ceoMission;
+missionEl.addEventListener('input', () => {
+  ceoMission = missionEl.value;
+  DB.save('vo_mission', ceoMission);
+});
+
+// アバター絵文字選択
+const avatars = ['👔','👨‍💼','👩‍💼','🧑‍💼','🦸','🧙','🥷','🧑‍🚀','👑','🎯'];
+let avatarIdx = DB.load('vo_avatar', 0);
+const ceoEl = document.getElementById('ceo-emoji');
+ceoEl.textContent = avatars[avatarIdx];
+ceoEl.addEventListener('click', () => {
+  avatarIdx = (avatarIdx + 1) % avatars.length;
+  ceoEl.textContent = avatars[avatarIdx];
+  DB.save('vo_avatar', avatarIdx);
+});
+
+function updateStats() {
+  document.getElementById('stat-ideas').textContent    = ideas.length;
+  document.getElementById('stat-research').textContent = research.length;
+  document.getElementById('stat-tasks').textContent    = tasks.filter(t=>!t.done).length;
+  document.getElementById('stat-drafts').textContent   = drafts.length;
+  document.getElementById('count-plan').textContent     = ideas.length    + '件';
+  document.getElementById('count-research').textContent= research.length  + '件';
+  document.getElementById('count-work').textContent    = tasks.length     + '件';
+  document.getElementById('count-sns').textContent     = drafts.length    + '件';
+}
+
+// ==================== MODAL ====================
+function openModal(dept) {
+  document.getElementById('modal-' + dept).classList.add('open');
+  document.body.style.overflow = 'hidden';
+  if (dept === 'plan')     renderKanban();
+  if (dept === 'research') renderResearch();
+  if (dept === 'work')     renderTasks();
+  if (dept === 'sns')      renderDrafts();
+}
+
+function closeModal(dept) {
+  document.getElementById('modal-' + dept).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => {
+    if (e.target === el) closeModal(el.id.replace('modal-',''));
+  });
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(el =>
+      el.classList.remove('open'));
+    document.body.style.overflow = '';
+  }
+});
+
+// ==================== 企画部 ====================
+function addIdea() {
+  const v = document.getElementById('plan-input').value.trim();
+  if (!v) return;
+  ideas.unshift({ id: Date.now(), text: v, status: 'idea' });
+  DB.save('vo_ideas', ideas);
+  document.getElementById('plan-input').value = '';
+  renderKanban();
+  updateStats();
+}
+
+document.getElementById('plan-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addIdea();
+});
+
+function moveIdea(id, status) {
+  ideas = ideas.map(i => i.id === id ? {...i, status} : i);
+  DB.save('vo_ideas', ideas);
+  renderKanban();
+}
+
+function deleteIdea(id) {
+  ideas = ideas.filter(i => i.id !== id);
+  DB.save('vo_ideas', ideas);
+  renderKanban();
+  updateStats();
+}
+
+function renderKanban() {
+  const cols = { idea: 'col-idea', wip: 'col-wip', done: 'col-done' };
+  const labels = { idea: 'アイデア', wip: '進行中', done: '完了' };
+  const moves = {
+    idea: [['wip','→ 進行中'], ['done','→ 完了']],
+    wip:  [['idea','← アイデア'], ['done','→ 完了']],
+    done: [['idea','← アイデア'], ['wip','← 進行中']]
+  };
+
+  Object.entries(cols).forEach(([status, colId]) => {
+    const col = document.getElementById(colId);
+    const header = col.querySelector('.kanban-col-title');
+    col.innerHTML = '';
+    col.appendChild(header);
+
+    ideas.filter(i => i.status === status).forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'kanban-card';
+      card.innerHTML = `
+        <button class="kanban-card-del" onclick="deleteIdea(${item.id})">✕</button>
+        <div style="margin-bottom:8px;padding-right:16px">${escHtml(item.text)}</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          ${moves[status].map(([s,l]) =>
+            `<button onclick="moveIdea(${item.id},'${s}')"
+              style="background:var(--surface);border:1px solid var(--border);border-radius:6px;
+                     padding:2px 8px;font-size:11px;color:var(--muted);cursor:pointer">${l}</button>`
+          ).join('')}
+        </div>`;
+      col.appendChild(card);
+    });
+  });
+}
+
+// ==================== リサーチ部 ====================
+function addResearch() {
+  const title = document.getElementById('r-title').value.trim();
+  if (!title) return;
+  const url  = document.getElementById('r-url').value.trim();
+  const memo = document.getElementById('r-memo').value.trim();
+  const tags = document.getElementById('r-tag').value.split(',').map(t=>t.trim()).filter(Boolean);
+  research.unshift({ id: Date.now(), title, url, memo, tags });
+  DB.save('vo_research', research);
+  ['r-title','r-url','r-memo','r-tag'].forEach(id => document.getElementById(id).value = '');
+  renderResearch();
+  updateStats();
+}
+
+function deleteResearch(id) {
+  research = research.filter(r => r.id !== id);
+  DB.save('vo_research', research);
+  renderResearch();
+  updateStats();
+}
+
+function renderResearch() {
+  const list = document.getElementById('research-list');
+  if (!research.length) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:20px 0;text-align:center">リサーチがまだありません</div>';
+    return;
+  }
+  list.innerHTML = research.map(r => `
+    <div class="research-item">
+      <div class="research-item-icon">📎</div>
+      <div class="research-item-body">
+        <div class="research-item-title">${escHtml(r.title)}</div>
+        ${r.url ? `<a class="research-item-url" href="${escHtml(r.url)}" target="_blank" rel="noopener">${escHtml(r.url)}</a>` : ''}
+        ${r.memo ? `<div class="research-item-memo">${escHtml(r.memo)}</div>` : ''}
+        <div style="margin-top:6px">${r.tags.map(t=>`<span class="tag">${escHtml(t)}</span>`).join('')}</div>
+      </div>
+      <button onclick="deleteResearch(${r.id})"
+        style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;flex-shrink:0">✕</button>
+    </div>`).join('');
+}
+
+// ==================== 執務部 - POMODORO ====================
+let pomoState = { running: false, mode: 'work', sec: 25*60, sessions: 0, timer: null };
+const POMO_WORK = 25*60, POMO_BREAK = 5*60;
+const arc = document.getElementById('pomo-arc');
+const CIRCUM = 2 * Math.PI * 82;
+arc.style.strokeDasharray = CIRCUM;
+
+function updatePomoDisplay() {
+  const m = String(Math.floor(pomoState.sec/60)).padStart(2,'0');
+  const s = String(pomoState.sec%60).padStart(2,'0');
+  document.getElementById('pomo-display').textContent = `${m}:${s}`;
+  document.getElementById('pomo-mode').textContent = pomoState.mode==='work' ? '集中タイム' : '休憩タイム';
+  document.getElementById('pomo-count').textContent = `完了セット: ${pomoState.sessions}`;
+  const total = pomoState.mode === 'work' ? POMO_WORK : POMO_BREAK;
+  const ratio = pomoState.sec / total;
+  arc.style.strokeDashoffset = CIRCUM * (1 - ratio);
+  arc.style.stroke = pomoState.mode === 'work' ? 'var(--dept-work)' : 'var(--dept-research)';
+}
+
+function togglePomo() {
+  const btn = document.getElementById('pomo-btn');
+  if (pomoState.running) {
+    clearInterval(pomoState.timer);
+    pomoState.running = false;
+    btn.textContent = '▶ スタート';
+  } else {
+    pomoState.running = true;
+    btn.textContent = '⏸ 一時停止';
+    pomoState.timer = setInterval(() => {
+      pomoState.sec--;
+      if (pomoState.sec <= 0) {
+        clearInterval(pomoState.timer);
+        pomoState.running = false;
+        btn.textContent = '▶ スタート';
+        if (pomoState.mode === 'work') {
+          pomoState.sessions++;
+          pomoState.mode = 'break';
+          pomoState.sec  = POMO_BREAK;
+        } else {
+          pomoState.mode = 'work';
+          pomoState.sec  = POMO_WORK;
+        }
+      }
+      updatePomoDisplay();
+    }, 1000);
+  }
+}
+
+function resetPomo() {
+  clearInterval(pomoState.timer);
+  pomoState = { running: false, mode: 'work', sec: POMO_WORK, sessions: pomoState.sessions, timer: null };
+  document.getElementById('pomo-btn').textContent = '▶ スタート';
+  updatePomoDisplay();
+}
+
+updatePomoDisplay();
+
+// ===== タスク =====
+function addTask() {
+  const v = document.getElementById('task-input').value.trim();
+  if (!v) return;
+  tasks.unshift({ id: Date.now(), text: v, done: false });
+  DB.save('vo_tasks', tasks);
+  document.getElementById('task-input').value = '';
+  renderTasks();
+  updateStats();
+}
+
+document.getElementById('task-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addTask();
+});
+
+function toggleTask(id) {
+  tasks = tasks.map(t => t.id === id ? {...t, done: !t.done} : t);
+  DB.save('vo_tasks', tasks);
+  renderTasks();
+  updateStats();
+}
+
+function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id);
+  DB.save('vo_tasks', tasks);
+  renderTasks();
+  updateStats();
+}
+
+function renderTasks() {
+  const el = document.getElementById('task-list');
+  if (!tasks.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:16px 0;text-align:center">タスクを追加しましょう</div>';
+    return;
+  }
+  el.innerHTML = tasks.map(t => `
+    <div class="work-task${t.done?' done':''}">
+      <div class="work-task-check" onclick="toggleTask(${t.id})">${t.done?'✓':''}</div>
+      <span class="work-task-text">${escHtml(t.text)}</span>
+      <button class="work-task-del" onclick="deleteTask(${t.id})">✕</button>
+    </div>`).join('');
+}
+
+// ==================== 校正部 ====================
+function analyzeText() {
+  const text = document.getElementById('proof-text').value;
+  const chars   = text.length;
+  const nospace = text.replace(/\s/g,'').length;
+  const lines   = text ? text.split('\n').length : 0;
+  const words   = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const sents   = (text.match(/[。！？.!?]/g)||[]).length;
+  const readMin = Math.max(1, Math.ceil(nospace / 400));
+
+  document.getElementById('p-chars').textContent  = chars;
+  document.getElementById('p-nospace').textContent= nospace;
+  document.getElementById('p-lines').textContent  = lines;
+  document.getElementById('p-words').textContent  = words;
+  document.getElementById('p-sents').textContent  = sents;
+  document.getElementById('p-read').textContent   = readMin + '分';
+
+  const alerts = [];
+  if (chars > 0 && chars < 100) alerts.push('文章が短めです（100文字未満）');
+  if (text.includes('  ')) alerts.push('連続スペースが含まれています');
+  if (/。。|！！|？？/.test(text)) alerts.push('句読点の重複があります');
+  if (/(.)\1{4,}/.test(text)) alerts.push('同じ文字が5回以上連続しています');
+  if (text.includes('　　')) alerts.push('連続全角スペースがあります');
+
+  const alertsEl = document.getElementById('proof-alerts');
+  alertsEl.innerHTML = alerts.map(a => `<div class="proof-alert">⚠ ${a}</div>`).join('');
+}
+
+function copyText() {
+  const text = document.getElementById('proof-text').value;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = 'コピー済み ✓';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+function clearProof() {
+  document.getElementById('proof-text').value = '';
+  analyzeText();
+}
+
+// ==================== SNS展開部 ====================
+const SNS_LIMITS = { X: 280, Instagram: 2200, Note: 10000 };
+
+function setSnsTab(tab) {
+  snsTab = tab;
+  document.querySelectorAll('.sns-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  updateSnsCount();
+}
+
+function updateSnsCount() {
+  const len = document.getElementById('sns-text').value.length;
+  const limit = SNS_LIMITS[snsTab];
+  const el = document.getElementById('sns-count');
+  el.textContent = `${len} / ${limit}`;
+  el.className = 'sns-char-count' + (len > limit ? ' over' : '');
+}
+
+function saveDraft() {
+  const text = document.getElementById('sns-text').value.trim();
+  if (!text) return;
+  const d = new Date();
+  drafts.unshift({
+    id: Date.now(),
+    platform: snsTab,
+    text,
+    date: `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`
+  });
+  DB.save('vo_drafts', drafts);
+  document.getElementById('sns-text').value = '';
+  updateSnsCount();
+  renderDrafts();
+  updateStats();
+}
+
+function deleteDraft(id) {
+  drafts = drafts.filter(d => d.id !== id);
+  DB.save('vo_drafts', drafts);
+  renderDrafts();
+  updateStats();
+}
+
+function editDraft(id) {
+  const d = drafts.find(x => x.id === id);
+  if (!d) return;
+  setSnsTab(d.platform);
+  document.getElementById('sns-text').value = d.text;
+  updateSnsCount();
+  deleteDraft(id);
+}
+
+function renderDrafts() {
+  const el = document.getElementById('sns-drafts');
+  if (!drafts.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:16px 0;text-align:center">下書きがまだありません</div>';
+    return;
+  }
+  const colors = { X:'#1d9bf0', Instagram:'#e1306c', Note:'#41b883' };
+  el.innerHTML = drafts.map(d => `
+    <div class="draft-item">
+      <div class="draft-header">
+        <span class="draft-platform" style="color:${colors[d.platform]||'var(--muted)'}">${d.platform}</span>
+        <span class="draft-date">${d.date}</span>
+      </div>
+      <div class="draft-text">${escHtml(d.text)}</div>
+      <div class="draft-actions">
+        <button class="btn btn-ghost" onclick="editDraft(${d.id})" style="font-size:13px;padding:6px 12px">編集</button>
+        <button class="btn btn-ghost" onclick="deleteDraft(${d.id})" style="font-size:13px;padding:6px 12px;color:#ff4d4f">削除</button>
+      </div>
+    </div>`).join('');
+}
+
+// ==================== UTILS ====================
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+// ==================== INIT ====================
+updateStats();
+</script>
+</body>
+</html>
