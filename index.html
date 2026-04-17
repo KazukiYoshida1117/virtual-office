@@ -1982,19 +1982,13 @@ function setSnsTab(tab) {
   snsTab = tab;
   document.querySelectorAll('.sns-tab').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
-  const isNote   = tab === 'Note';
-  const isGmail  = tab === 'Gmail';
-  document.getElementById('gmail-section').style.display        = isGmail ? ''     : 'none';
-  document.getElementById('sns-composer').style.display         = (isNote || isGmail) ? 'none' : '';
-  document.getElementById('note-composer').style.display        = isNote  ? ''     : 'none';
-  document.getElementById('drafts-section').style.display       = (isNote || isGmail) ? 'none' : '';
-  document.getElementById('note-drafts-section').style.display  = isNote  ? ''     : 'none';
-  if (!isNote && !isGmail) updateSnsCount();
+  const isNote = tab === 'Note';
+  document.getElementById('sns-composer').style.display        = isNote ? 'none' : '';
+  document.getElementById('note-composer').style.display       = isNote ? ''     : 'none';
+  document.getElementById('drafts-section').style.display      = isNote ? 'none' : '';
+  document.getElementById('note-drafts-section').style.display = isNote ? ''     : 'none';
+  if (!isNote) updateSnsCount();
   if (isNote) renderNoteDrafts();
-  if (isGmail) {
-    const saved = DB.load('vo_gmail_script_url', '');
-    if (saved) document.getElementById('gmail-script-url').value = saved;
-  }
 }
 
 function updateSnsCount() {
