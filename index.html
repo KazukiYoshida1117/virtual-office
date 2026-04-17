@@ -1416,9 +1416,7 @@ missionEl.addEventListener('input', () => {
   ceoMission = missionEl.value;
   DB.save('vo_mission', ceoMission);
 });
-missionEl.addEventListener('keydown', e => {
-  if (e.key === 'Enter') broadcastInstruction();
-});
+// Enterキーでは実行しない（ボタンのみで指示を送る）
 
 // アバター絵文字選択
 const avatars = ['👔','👨‍💼','👩‍💼','🧑‍💼','🦸','🧙','🥷','🧑‍🚀','👑','🎯'];
