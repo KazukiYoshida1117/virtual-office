@@ -2497,6 +2497,141 @@ function syncSNSFromNotion() {
   .catch(err => setNotionLog('❌ 接続エラー: ' + err.message));
 }
 
+// ─── Gmail 連携 ──────────────────────────────────────────────
+let gmailSelectedThread = null;
+
+function saveGmailScriptUrl() {
+  const url = document.getElementById('gmail-script-url').value.trim();
+  if (!url) return;
+  DB.save('vo_gmail_script_url', url);
+  showLog('sns', '✅ Gmail Apps Script URL を保存しました');
+}
+
+function getGmailScriptUrl() {
+  return DB.load('vo_gmail_script_url', '') || document.getElementById('gmail-script-url').value.trim();
+}
+
+async function fetchGmailInbox() {
+  const url = getGmailScriptUrl();
+  if (!url) { showLog('sns', '⚠ Apps Script URL を設定してください'); return; }
+  const btn = document.getElementById('gmail-fetch-btn');
+  btn.textContent = '⏳ 取得中...';
+  btn.disabled = true;
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'gmail_inbox', maxThreads: 20 })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || '取得失敗');
+    renderGmailThreads(data.threads || []);
+    document.getElementById('gmail-inbox').style.display = '';
+  } catch (e) {
+    showLog('sns', '❌ Gmail取得エラー: ' + e.message);
+  } finally {
+    btn.textContent = '📥 受信箱を取得';
+    btn.disabled = false;
+  }
+}
+
+function renderGmailThreads(threads) {
+  const list = document.getElementById('gmail-thread-list');
+  if (!threads.length) { list.innerHTML = '<div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">メールがありません</div>'; return; }
+  list.innerHTML = threads.map((t, i) => `
+    <div onclick="selectGmailThread(${i})" style="padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+      <div style="font-size:12px;font-weight:${t.isUnread ? '700' : '400'};color:var(--text);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(t.subject || '(件名なし)')}</div>
+      <div style="font-size:11px;color:var(--muted);display:flex;justify-content:space-between">
+        <span>${escHtml(t.from || '')}</span>
+        <span>${escHtml(t.date || '')}</span>
+      </div>
+    </div>
+  `).join('');
+  list._threads = threads;
+}
+
+function selectGmailThread(idx) {
+  const threads = document.getElementById('gmail-thread-list')._threads || [];
+  const t = threads[idx];
+  if (!t) return;
+  gmailSelectedThread = t;
+  document.getElementById('gmail-subject').textContent = t.subject || '(件名なし)';
+  document.getElementById('gmail-meta').textContent    = `From: ${t.from}  |  ${t.date}`;
+  document.getElementById('gmail-body').textContent    = t.body || '(本文なし)';
+  document.getElementById('gmail-viewer').style.display = '';
+  document.getElementById('gmail-reply-section').style.display = 'none';
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+async function generateEmailReply() {
+  if (!gmailSelectedThread) return;
+  const apiKey = DB.load('vo_gemini_key', '');
+  if (!apiKey) { showLog('sns', '⚠ Gemini APIキーが未設定です（設定パネルで入力してください）'); return; }
+  const replySection = document.getElementById('gmail-reply-section');
+  const replyText    = document.getElementById('gmail-reply-text');
+  replySection.style.display = '';
+  replyText.value = '⏳ AIが返信案を作成中...';
+
+  const prompt = `以下のメールに対して、丁寧で簡潔なビジネスメールの返信案を日本語で作成してください。
+
+件名: ${gmailSelectedThread.subject}
+差出人: ${gmailSelectedThread.from}
+本文:
+${gmailSelectedThread.body}
+
+返信のポイント：
+- 冒頭に「お世話になっております。」を入れる
+- 相手の要件に的確に応答する
+- 結びの挨拶を入れる
+- 署名は「[署名]」とプレースホルダーにする
+
+返信本文のみ出力してください。`;
+
+  try {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    const d = await r.json();
+    const text = d.candidates?.[0]?.content?.parts?.[0]?.text || '返信案の生成に失敗しました';
+    replyText.value = text;
+  } catch (e) {
+    replyText.value = '❌ エラー: ' + e.message;
+  }
+}
+
+async function createGmailDraft() {
+  const url = getGmailScriptUrl();
+  if (!url) { showLog('sns', '⚠ Apps Script URL を設定してください'); return; }
+  if (!gmailSelectedThread) { showLog('sns', '⚠ 返信元メールが選択されていません'); return; }
+  const body    = document.getElementById('gmail-reply-text').value.trim();
+  const statusEl = document.getElementById('gmail-draft-status');
+  if (!body) { statusEl.textContent = '⚠ 返信本文を入力してください'; return; }
+  statusEl.textContent = '⏳ 下書き保存中...';
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'gmail_draft',
+        threadId: gmailSelectedThread.threadId,
+        to: gmailSelectedThread.from,
+        subject: 'Re: ' + (gmailSelectedThread.subject || ''),
+        body
+      })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || '下書き保存失敗');
+    statusEl.textContent = '✅ Gmailに下書き保存しました';
+    statusEl.style.color = 'var(--dept-work)';
+  } catch (e) {
+    statusEl.textContent = '❌ エラー: ' + e.message;
+    statusEl.style.color = '#f87171';
+  }
+}
+
 // 設定を復元
 setTimeout(() => {
   if (notionSettings.key) {
