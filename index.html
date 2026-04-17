@@ -1999,7 +1999,7 @@ function renderDrafts() {
 }
 
 // ==================== 部署間自動連携 ====================
-const deptNames = { plan: '企画部', research: 'リサーチ部', work: '執務部', proof: '校正部', sns: 'SNS展開部', CEO: '👑 社長室' };
+const deptNames = { plan: '司令塔AI', research: 'リサーチ＆マーケAI', work: 'スケジュール管理AI', proof: 'ライティングAI', sns: 'メール秘書AI', think: '思考整理AI', web: 'Webデザイン制作AI', CEO: '👑 社長' };
 let activityLog = DB.load('vo_activity', []);
 
 function autoRoute(toDept, fromDept, text) {
