@@ -1257,6 +1257,73 @@ body {
   </div>
 </div>
 
+<!-- 思考整理AI -->
+<div class="modal-overlay" id="modal-think">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--dept-think)">🧠 思考整理AI <span style="font-size:11px;background:rgba(167,139,250,0.15);color:var(--dept-think);padding:2px 8px;border-radius:8px;margin-left:8px">LAYER 3</span></div>
+      <button class="modal-close" onclick="closeModal('think')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="log-think" style="display:none;background:rgba(167,139,250,0.07);border:1px solid var(--dept-think);border-radius:12px;padding:14px;margin-bottom:16px"></div>
+      <div style="background:var(--surface2);border:1px solid var(--dept-think);border-radius:12px;padding:16px;margin-bottom:20px">
+        <div style="font-size:13px;color:var(--dept-think);font-weight:700;margin-bottom:8px">🧠 思考整理AIの責務</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7">
+          複雑な問題を構造化・根本原因の分析・戦略的思考の支援・意思決定の論拠整理
+        </div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px">整理したいテーマ・問題</div>
+        <input class="input" id="think-title" placeholder="例: 新サービスの方向性を整理したい" style="margin-bottom:8px">
+        <textarea class="textarea" id="think-body" placeholder="考えていることを自由に書き出す…" style="min-height:160px"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:20px">
+        <button class="btn" onclick="saveThinkNote()" style="background:var(--dept-think);color:#fff;border:none;flex:1">💾 保存</button>
+        <button class="btn" onclick="organizeWithGemini()" style="background:var(--surface2);color:var(--dept-think);border:1px solid var(--dept-think);flex:1">🤖 AIで整理</button>
+        <button class="btn btn-ghost" onclick="clearThink()">クリア</button>
+      </div>
+      <div id="think-ai-result" style="display:none;background:rgba(167,139,250,0.08);border:1px solid var(--dept-think);border-radius:12px;padding:16px;margin-bottom:16px">
+        <div style="font-size:11px;font-weight:700;color:var(--dept-think);margin-bottom:8px">🤖 AI整理結果</div>
+        <div id="think-ai-text" style="font-size:13px;line-height:1.8;white-space:pre-wrap;color:var(--text)"></div>
+      </div>
+      <div class="section-title">保存済みメモ</div>
+      <div id="think-notes-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Webデザイン制作AI -->
+<div class="modal-overlay" id="modal-web">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--dept-web)">🎨 Webデザイン制作AI <span style="font-size:11px;background:rgba(45,212,191,0.15);color:var(--dept-web);padding:2px 8px;border-radius:8px;margin-left:8px">LAYER 3</span></div>
+      <button class="modal-close" onclick="closeModal('web')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="log-web" style="display:none;background:rgba(45,212,191,0.07);border:1px solid var(--dept-web);border-radius:12px;padding:14px;margin-bottom:16px"></div>
+      <div style="background:var(--surface2);border:1px solid var(--dept-web);border-radius:12px;padding:16px;margin-bottom:20px">
+        <div style="font-size:13px;color:var(--dept-web);font-weight:700;margin-bottom:8px">🎨 Webデザイン制作AIの責務</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7">
+          UI/UXデザイン・ランディングページ制作・ブランドビジュアル提案・レスポンシブ対応
+        </div>
+      </div>
+      <div class="section-title">デザインタスク</div>
+      <div class="row">
+        <input class="input" id="web-task-input" placeholder="デザインタスクを入力…" style="flex:1" maxlength="100">
+        <button class="btn" onclick="addWebTask()" style="background:var(--dept-web);color:#000;border:none">追加</button>
+      </div>
+      <div id="web-task-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px"></div>
+      <div class="section-title">デザイン指示書</div>
+      <div style="margin-bottom:8px">
+        <input class="input" id="web-brief-title" placeholder="案件名" style="margin-bottom:8px">
+        <textarea class="textarea" id="web-brief-body" placeholder="デザインの要件・参考・メモを記入…" style="min-height:120px"></textarea>
+      </div>
+      <button class="btn" onclick="saveWebBrief()" style="background:var(--dept-web);color:#000;border:none;width:100%">📋 指示書を保存</button>
+      <div id="web-briefs-list" style="margin-top:16px"></div>
+    </div>
+  </div>
+</div>
+
 <!-- Note 公開前チェックモーダル -->
 <div class="modal-overlay" id="note-publish-modal" style="z-index:10000">
   <div class="modal" style="max-width:480px">
