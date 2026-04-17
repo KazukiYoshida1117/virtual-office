@@ -849,14 +849,20 @@ body {
   <div class="ceo-info">
     <div class="ceo-name" id="ceo-name-display">かずき社長</div>
     <div class="ceo-mission-label">今日のミッション</div>
-    <div style="display:flex;gap:8px;align-items:center;max-width:560px">
-      <input class="ceo-mission-input" id="ceo-mission" type="text"
-        placeholder="指示を入力…" maxlength="80" style="max-width:100%;flex:1">
-      <button onclick="broadcastInstruction()"
-        style="background:var(--gold);color:#000;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:opacity 0.2s"
-        onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-        🎯 司令塔へ指示
-      </button>
+    <div style="max-width:600px">
+      <textarea id="ceo-mission"
+        placeholder="指示を入力…"
+        maxlength="400"
+        rows="3"
+        style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:14px;outline:none;resize:vertical;font-family:inherit;line-height:1.6;transition:border-color 0.2s"
+        onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+      <div style="display:flex;justify-content:flex-end;margin-top:6px">
+        <button onclick="broadcastInstruction()"
+          style="background:var(--gold);color:#000;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;transition:opacity 0.2s"
+          onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+          🎯 司令塔へ指示
+        </button>
+      </div>
     </div>
   </div>
   <div class="ceo-stats">
