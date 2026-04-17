@@ -2561,10 +2561,6 @@ function selectGmailThread(idx) {
   document.getElementById('gmail-reply-section').style.display = 'none';
 }
 
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
 async function generateEmailReply() {
   if (!gmailSelectedThread) return;
   const apiKey = DB.load('vo_gemini_key', '');
