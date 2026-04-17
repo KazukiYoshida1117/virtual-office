@@ -2188,6 +2188,167 @@ setTimeout(() => {
   }
 }, 300);
 
+// ==================== 思考整理AI ====================
+let thinkNotes = DB.load('vo_thinknotes', []);
+let webTasks   = DB.load('vo_webtasks',   []);
+let webBriefs  = DB.load('vo_webbriefs',  []);
+
+function saveThinkNote() {
+  const title = document.getElementById('think-title').value.trim();
+  const body  = document.getElementById('think-body').value.trim();
+  if (!body) return;
+  const d = new Date();
+  const ts = `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  thinkNotes.unshift({ id: Date.now(), title: title || '無題', body, ts });
+  DB.save('vo_thinknotes', thinkNotes);
+  document.getElementById('think-title').value = '';
+  document.getElementById('think-body').value = '';
+  document.getElementById('think-ai-result').style.display = 'none';
+  renderThinkNotes();
+  showToast('思考メモを保存しました');
+}
+
+function clearThink() {
+  document.getElementById('think-title').value = '';
+  document.getElementById('think-body').value = '';
+  document.getElementById('think-ai-result').style.display = 'none';
+}
+
+function deleteThinkNote(id) {
+  thinkNotes = thinkNotes.filter(n => n.id !== id);
+  DB.save('vo_thinknotes', thinkNotes);
+  renderThinkNotes();
+}
+
+function renderThinkNotes() {
+  const el = document.getElementById('think-notes-list');
+  if (!el) return;
+  if (!thinkNotes.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:16px 0;text-align:center">保存済みメモがありません</div>';
+    return;
+  }
+  el.innerHTML = thinkNotes.map(n => `
+    <div class="draft-item" style="border-left:3px solid var(--dept-think);margin-bottom:10px">
+      <div class="draft-header">
+        <span style="font-weight:700;font-size:13px;color:var(--dept-think)">🧠 ${escHtml(n.title)}</span>
+        <span class="draft-date">${n.ts}</span>
+      </div>
+      <div class="draft-text" style="margin-top:6px">${escHtml(n.body)}</div>
+      <div class="draft-actions">
+        <button class="btn btn-ghost" onclick="deleteThinkNote(${n.id})" style="font-size:13px;padding:6px 12px;color:#ff4d4f">削除</button>
+      </div>
+    </div>`).join('');
+}
+
+async function organizeWithGemini() {
+  const key = geminiKey;
+  if (!key) { showToast('ライティングAIでGemini APIキーを設定してください'); return; }
+  const body = document.getElementById('think-body').value.trim();
+  if (!body) { showToast('整理したい内容を入力してください'); return; }
+  const title = document.getElementById('think-title').value.trim();
+
+  const prompt = `以下の考えを構造化・整理してください。\n\nテーマ: ${title || '(未設定)'}\n\n内容:\n${body}\n\n以下の形式で日本語で出力してください:\n【本質的な問い】\n\n【現状整理】\n\n【選択肢・方向性】\n\n【推奨アクション】`;
+
+  const resultEl = document.getElementById('think-ai-result');
+  const resultText = document.getElementById('think-ai-text');
+  resultEl.style.display = 'block';
+  resultText.textContent = '🤖 AIが整理中...';
+
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,
+      { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ contents:[{ parts:[{ text: prompt }] }] }) }
+    );
+    const data = await res.json();
+    resultText.textContent = data.candidates?.[0]?.content?.parts?.[0]?.text || '❌ 応答を取得できませんでした';
+  } catch(e) {
+    resultText.textContent = '❌ 通信エラー: ' + e.message;
+  }
+}
+
+// ==================== Webデザイン制作AI ====================
+function addWebTask() {
+  const v = document.getElementById('web-task-input').value.trim();
+  if (!v) return;
+  webTasks.unshift({ id: Date.now(), text: v, done: false });
+  DB.save('vo_webtasks', webTasks);
+  document.getElementById('web-task-input').value = '';
+  renderWebTasks();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const el = document.getElementById('web-task-input');
+  if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') addWebTask(); });
+});
+
+function toggleWebTask(id) {
+  webTasks = webTasks.map(t => t.id === id ? {...t, done: !t.done} : t);
+  DB.save('vo_webtasks', webTasks);
+  renderWebTasks();
+}
+
+function deleteWebTask(id) {
+  webTasks = webTasks.filter(t => t.id !== id);
+  DB.save('vo_webtasks', webTasks);
+  renderWebTasks();
+}
+
+function renderWebTasks() {
+  const el = document.getElementById('web-task-list');
+  if (!el) return;
+  if (!webTasks.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:8px 0">タスクがありません</div>';
+    return;
+  }
+  el.innerHTML = webTasks.map(t => `
+    <div class="work-task${t.done?' done':''}">
+      <div class="work-task-check" onclick="toggleWebTask(${t.id})" style="border-color:var(--dept-web)">${t.done?'✓':''}</div>
+      <span class="work-task-text">${escHtml(t.text)}</span>
+      <button class="work-task-del" onclick="deleteWebTask(${t.id})">✕</button>
+    </div>`).join('');
+}
+
+function saveWebBrief() {
+  const title = document.getElementById('web-brief-title').value.trim();
+  const body  = document.getElementById('web-brief-body').value.trim();
+  if (!title && !body) return;
+  const d = new Date();
+  const ts = `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  webBriefs.unshift({ id: Date.now(), title: title || '無題', body, ts });
+  DB.save('vo_webbriefs', webBriefs);
+  document.getElementById('web-brief-title').value = '';
+  document.getElementById('web-brief-body').value = '';
+  renderWebBriefs();
+  showToast('指示書を保存しました');
+}
+
+function deleteWebBrief(id) {
+  webBriefs = webBriefs.filter(b => b.id !== id);
+  DB.save('vo_webbriefs', webBriefs);
+  renderWebBriefs();
+}
+
+function renderWebBriefs() {
+  const el = document.getElementById('web-briefs-list');
+  if (!el) return;
+  if (!webBriefs.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:8px 0">保存済み指示書がありません</div>';
+    return;
+  }
+  el.innerHTML = webBriefs.map(b => `
+    <div class="draft-item" style="border-left:3px solid var(--dept-web);margin-bottom:10px">
+      <div class="draft-header">
+        <span style="font-weight:700;font-size:13px;color:var(--dept-web)">🎨 ${escHtml(b.title)}</span>
+        <span class="draft-date">${b.ts}</span>
+      </div>
+      ${b.body ? `<div class="draft-text" style="margin-top:6px">${escHtml(b.body)}</div>` : ''}
+      <div class="draft-actions">
+        <button class="btn btn-ghost" onclick="deleteWebBrief(${b.id})" style="font-size:13px;padding:6px 12px;color:#ff4d4f">削除</button>
+      </div>
+    </div>`).join('');
+}
+
 // ==================== UTILS ====================
 function escHtml(s) {
   return String(s)
