@@ -8,9 +8,6 @@
 (function(){
   var key = "vo_auth";
   if(sessionStorage.getItem(key) !== "ok"){
-    document.addEventListener("DOMContentLoaded", function(){
-      document.body.style.display = "none";
-    });
     var pw = prompt("パスワードを入力してください");
     if(pw === "Kazunoko1117"){
       sessionStorage.setItem(key, "ok");
