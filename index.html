@@ -1450,7 +1450,10 @@ function closeModal(dept) {
 
 document.querySelectorAll('.modal-overlay').forEach(el => {
   el.addEventListener('click', e => {
-    if (e.target === el) closeModal(el.id.replace('modal-',''));
+    if (e.target === el) {
+      const id = el.id.replace('modal-','');
+      if (['plan','research','work','proof','sns','think','web'].includes(id)) closeModal(id);
+    }
   });
 });
 
