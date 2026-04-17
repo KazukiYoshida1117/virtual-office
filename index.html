@@ -4,6 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Virtual Office</title>
+<script>
+(function(){
+  var key = "vo_auth";
+  if(sessionStorage.getItem(key) !== "ok"){
+    document.addEventListener("DOMContentLoaded", function(){
+      document.body.style.display = "none";
+    });
+    var pw = prompt("パスワードを入力してください");
+    if(pw === "Kazunoko1117"){
+      sessionStorage.setItem(key, "ok");
+    } else {
+      document.write("<div style='background:#0f1117;color:#e8eaf0;height:100vh;display:flex;align-items:center;justify-content:center;font-family:sans-serif;font-size:18px;'>アクセスが拒否されました</div>");
+      document.close();
+    }
+  }
+})();
+</script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
