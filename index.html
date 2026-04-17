@@ -1189,9 +1189,50 @@ body {
     <div class="modal-body">
       <div id="log-sns" style="display:none;background:rgba(244,114,182,0.07);border:1px solid var(--dept-sns);border-radius:12px;padding:14px;margin-bottom:16px"></div>
       <div class="sns-tabs">
-        <button class="sns-tab active" onclick="setSnsTab('X')"       id="tab-X">𝕏 (Twitter)</button>
+        <button class="sns-tab"        onclick="setSnsTab('Gmail')"     id="tab-Gmail">📨 Gmail</button>
+        <button class="sns-tab active" onclick="setSnsTab('X')"         id="tab-X">𝕏 (Twitter)</button>
         <button class="sns-tab"        onclick="setSnsTab('Instagram')" id="tab-Instagram">📸 Instagram</button>
         <button class="sns-tab"        onclick="setSnsTab('Note')"      id="tab-Note">📝 Note</button>
+      </div>
+
+      <!-- Gmail セクション -->
+      <div id="gmail-section" style="display:none">
+        <div style="background:var(--surface2);border:1px solid var(--dept-sns);border-radius:12px;padding:16px;margin-bottom:16px">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:700">📨 Gmail受信箱</div>
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <input class="input" id="gmail-script-url" placeholder="Apps Script URL（設定→保存で記憶）" style="font-size:11px;flex:1">
+            <button class="btn btn-ghost" onclick="saveGmailScriptUrl()" style="font-size:11px;padding:6px 10px;white-space:nowrap">保存</button>
+          </div>
+          <button class="btn btn-sns" onclick="fetchGmailInbox()" id="gmail-fetch-btn" style="width:100%;margin-bottom:12px">📥 受信箱を取得</button>
+          <div id="gmail-inbox" style="display:none">
+            <div id="gmail-thread-list" style="max-height:240px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg)"></div>
+          </div>
+        </div>
+
+        <!-- 選択メール表示 -->
+        <div id="gmail-viewer" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">件名</div>
+          <div id="gmail-subject" style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px"></div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">差出人 / 日時</div>
+          <div id="gmail-meta" style="font-size:12px;color:var(--muted);margin-bottom:12px"></div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">本文</div>
+          <div id="gmail-body" style="font-size:13px;line-height:1.7;white-space:pre-wrap;max-height:200px;overflow-y:auto;color:var(--text);background:var(--bg);border-radius:8px;padding:12px;border:1px solid var(--border)"></div>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn btn-sns" onclick="generateEmailReply()" style="flex:1">🤖 AIで返信案を作成</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('gmail-viewer').style.display='none'" style="padding:10px 14px">✕</button>
+          </div>
+        </div>
+
+        <!-- AI返信コンポーザー -->
+        <div id="gmail-reply-section" style="display:none;margin-bottom:16px">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:700">🤖 AI返信案</div>
+          <textarea class="textarea" id="gmail-reply-text" style="min-height:160px;font-size:13px;line-height:1.7"></textarea>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn btn-sns" onclick="createGmailDraft()" style="flex:1">📤 Gmailで下書き保存</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('gmail-reply-section').style.display='none'" style="padding:10px 14px">✕</button>
+          </div>
+          <div id="gmail-draft-status" style="margin-top:8px;font-size:12px;color:var(--muted)"></div>
+        </div>
       </div>
       <div class="sns-composer" id="sns-composer">
         <textarea class="textarea" id="sns-text"
