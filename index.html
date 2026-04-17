@@ -2054,7 +2054,7 @@ function renderDeptLog(dept) {
 }
 
 function updateDeptBadges(highlight) {
-  ['plan','research','work','proof','sns'].forEach(dept => {
+  ['plan','research','work','proof','sns','think','web'].forEach(dept => {
     const badge = document.getElementById('badge-' + dept);
     if (!badge) return;
     const count = activityLog.filter(e => e.to === dept).length;
