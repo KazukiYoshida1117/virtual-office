@@ -874,42 +874,67 @@ body {
 </section>
 
 <!-- FLOOR PLAN -->
-<div class="floor-label">OFFICE FLOOR — 各部署をクリックして入室</div>
-<div class="floor-grid">
-  <div class="dept-card" data-dept="plan" onclick="openModal('plan')">
+<div class="floor-label" style="padding-bottom:4px">LAYER 2 — 司令塔</div>
+<div class="floor-grid" style="grid-template-columns:1fr;padding-bottom:8px">
+  <div class="dept-card layer2" data-dept="plan" onclick="openModal('plan')">
     <div class="dept-count" id="count-plan">0件</div>
     <span id="badge-plan" style="display:none;position:absolute;top:10px;left:10px;background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">0</span>
-    <div class="dept-icon">💡</div>
-    <div class="dept-name" style="color:var(--dept-plan)">企画部</div>
-    <div class="dept-desc">アイデアをカンバンで管理<br>進捗ステータスを可視化</div>
+    <div class="dept-icon">🎯</div>
+    <div class="dept-name" style="color:var(--dept-plan)">司令塔AI</div>
+    <div class="dept-desc">社長の補佐役・依頼の受付窓口<br>専門AIへの振り分けと結果統合</div>
+    <span class="layer-badge layer2-badge">LAYER 2</span>
   </div>
-  <div class="dept-card" data-dept="research" onclick="openModal('research')">
-    <div class="dept-count" id="count-research">0件</div>
-    <span id="badge-research" style="display:none;position:absolute;top:10px;left:10px;background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">0</span>
-    <div class="dept-icon">🔬</div>
-    <div class="dept-name" style="color:var(--dept-research)">リサーチ部</div>
-    <div class="dept-desc">URL・メモ・キーワードを<br>一元収集・管理</div>
+</div>
+
+<div class="floor-label" style="padding-bottom:4px">LAYER 3 — 専門AI</div>
+<div class="floor-grid">
+  <div class="dept-card" data-dept="think" onclick="openModal('think')">
+    <div class="dept-count" id="count-think">—</div>
+    <span id="badge-think" style="display:none;position:absolute;top:10px;left:10px;background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">0</span>
+    <div class="dept-icon">🧠</div>
+    <div class="dept-name" style="color:var(--dept-think)">思考整理AI</div>
+    <div class="dept-desc">複雑な問題を構造化<br>戦略・意思決定を支援</div>
+    <span class="layer-badge layer3-badge">LAYER 3</span>
+  </div>
+  <div class="dept-card" data-dept="sns" onclick="openModal('sns')">
+    <div class="dept-count" id="count-sns">0件</div>
+    <span id="badge-sns" style="display:none;position:absolute;top:10px;left:10px;background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">0</span>
+    <div class="dept-icon">📧</div>
+    <div class="dept-name" style="color:var(--dept-sns)">メール秘書AI</div>
+    <div class="dept-desc">メール文面の作成・返信案<br>下書き・Notion連携</div>
+    <span class="layer-badge layer3-badge">LAYER 3</span>
   </div>
   <div class="dept-card" data-dept="work" onclick="openModal('work')">
     <div class="dept-count" id="count-work">0件</div>
     <span id="badge-work" style="display:none;position:absolute;top:10px;left:10px;background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">0</span>
-    <div class="dept-icon">⚡</div>
-    <div class="dept-name" style="color:var(--dept-work)">執務部</div>
-    <div class="dept-desc">ポモドーロタイマーで<br>集中作業・タスク管理</div>
+    <div class="dept-icon">📅</div>
+    <div class="dept-name" style="color:var(--dept-work)">スケジュール管理AI</div>
+    <div class="dept-desc">タスク優先順位・期限管理<br>ポモドーロタイマー</div>
+    <span class="layer-badge layer3-badge">LAYER 3</span>
+  </div>
+  <div class="dept-card" data-dept="research" onclick="openModal('research')">
+    <div class="dept-count" id="count-research">0件</div>
+    <span id="badge-research" style="display:none;position:absolute;top:10px;left:10px;background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">0</span>
+    <div class="dept-icon">📊</div>
+    <div class="dept-name" style="color:var(--dept-research)">リサーチ＆マーケAI</div>
+    <div class="dept-desc">市場・競合調査・トレンド分析<br>マーケティング戦略立案</div>
+    <span class="layer-badge layer3-badge">LAYER 3</span>
   </div>
   <div class="dept-card" data-dept="proof" onclick="openModal('proof')">
     <div class="dept-count" id="count-proof">—</div>
     <span id="badge-proof" style="display:none;position:absolute;top:10px;left:10px;background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">0</span>
     <div class="dept-icon">✍️</div>
-    <div class="dept-name" style="color:var(--dept-proof)">校正部</div>
-    <div class="dept-desc">文章を貼って文字数確認<br>読みやすさチェック</div>
+    <div class="dept-name" style="color:var(--dept-proof)">ライティングAI</div>
+    <div class="dept-desc">記事・提案資料・コピー作成<br>PDF読込・AI要約</div>
+    <span class="layer-badge layer3-badge">LAYER 3</span>
   </div>
-  <div class="dept-card" data-dept="sns" onclick="openModal('sns')">
-    <div class="dept-count" id="count-sns">0件</div>
-    <span id="badge-sns" style="display:none;position:absolute;top:10px;left:10px;background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">0</span>
-    <div class="dept-icon">📣</div>
-    <div class="dept-name" style="color:var(--dept-sns)">SNS展開部</div>
-    <div class="dept-desc">X / Instagram / Note の<br>投稿下書きを管理</div>
+  <div class="dept-card" data-dept="web" onclick="openModal('web')">
+    <div class="dept-count" id="count-web">—</div>
+    <span id="badge-web" style="display:none;position:absolute;top:10px;left:10px;background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">0</span>
+    <div class="dept-icon">🎨</div>
+    <div class="dept-name" style="color:var(--dept-web)">Webデザイン制作AI</div>
+    <div class="dept-desc">UI/UXデザイン・LP制作<br>デザイン指示書・タスク管理</div>
+    <span class="layer-badge layer3-badge">LAYER 3</span>
   </div>
 </div>
 
