@@ -1438,6 +1438,8 @@ function openModal(dept) {
   if (dept === 'research') renderResearch();
   if (dept === 'work')     renderTasks();
   if (dept === 'sns')      renderDrafts();
+  if (dept === 'think')    renderThinkNotes();
+  if (dept === 'web')    { renderWebTasks(); renderWebBriefs(); }
   renderDeptLog(dept);
 }
 
