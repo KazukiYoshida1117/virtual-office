@@ -1914,10 +1914,12 @@ function syncSNSToNotion() {
   })
   .then(r => r.json())
   .then(res => {
-    if (res.success) {
+    if (res.success && res.count > 0) {
       setNotionLog(`✅ ${res.count}件をNotionのSNSフォルダに同期しました`);
       document.getElementById('notion-sync-status').textContent = '✓ 同期済み';
       document.getElementById('notion-sync-status').style.color = 'var(--dept-work)';
+    } else if (res.success && res.count === 0) {
+      setNotionLog('❌ Notionエラー: ' + (res.lastError || '不明'));
     } else {
       setNotionLog('❌ ' + (res.error || '同期に失敗しました'));
     }
