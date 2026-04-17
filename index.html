@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Virtual Office</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 (function(){
   var key = "vo_auth";
@@ -1135,7 +1136,7 @@ body {
         <button class="sns-tab"        onclick="setSnsTab('Instagram')" id="tab-Instagram">📸 Instagram</button>
         <button class="sns-tab"        onclick="setSnsTab('Note')"      id="tab-Note">📝 Note</button>
       </div>
-      <div class="sns-composer">
+      <div class="sns-composer" id="sns-composer">
         <textarea class="textarea" id="sns-text"
           placeholder="投稿内容を入力…"
           style="min-height:120px; margin-bottom:0"
@@ -1146,8 +1147,38 @@ body {
           <button class="btn btn-ghost" onclick="document.getElementById('sns-text').value='';updateSnsCount()">クリア</button>
         </div>
       </div>
-      <div class="section-title">保存済み下書き</div>
-      <div class="sns-drafts" id="sns-drafts"></div>
+
+      <!-- Note専用コンポーザー -->
+      <div id="note-composer" style="display:none">
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">記事タイトル</div>
+          <input class="input" id="note-title" placeholder="タイトルを入力（空欄でAIが自動選定）" style="font-size:14px;font-weight:600">
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">本文</div>
+          <textarea class="textarea" id="note-body" placeholder="本文を入力…" style="min-height:180px;margin-bottom:0;font-size:14px;line-height:1.7"></textarea>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">タグ（カンマ区切り）</div>
+          <input class="input" id="note-tags" placeholder="AI, テクノロジー, ビジネス" style="font-size:13px">
+        </div>
+        <div id="note-gen-status" style="display:none;font-size:13px;padding:10px 14px;background:rgba(65,184,131,0.1);border-radius:8px;margin-bottom:10px"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" id="note-gen-btn" onclick="generateNoteArticle()" style="background:#41b883;color:#fff;border:none;flex:1">🤖 AIで記事生成</button>
+          <button class="btn btn-ghost" onclick="saveNoteArticle()" style="flex:1;border-color:#41b883;color:#41b883">💾 下書き保存</button>
+          <button class="btn btn-ghost" onclick="clearNoteComposer()" style="padding:10px 14px">クリア</button>
+        </div>
+      </div>
+
+      <div id="drafts-section">
+        <div class="section-title">保存済み下書き</div>
+        <div class="sns-drafts" id="sns-drafts"></div>
+      </div>
+
+      <div id="note-drafts-section" style="display:none">
+        <div class="section-title">Note 下書き一覧</div>
+        <div id="note-drafts-list"></div>
+      </div>
 
       <!-- Notion連携 -->
       <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)">
@@ -1181,6 +1212,50 @@ body {
   </div>
 </div>
 
+<!-- Note 公開前チェックモーダル -->
+<div class="modal-overlay" id="note-publish-modal" style="z-index:10000">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <div class="modal-title" style="color:#41b883">📋 Note 公開前チェック</div>
+      <button class="modal-close" onclick="closeNotePublishModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:12px">記事タイトル</div>
+      <div id="note-check-title" style="font-weight:700;font-size:16px;margin-bottom:20px;padding:10px;background:var(--surface);border-radius:8px"></div>
+      <input type="hidden" id="note-check-id">
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer">
+          <input type="checkbox" id="chk-title" style="width:16px;height:16px">
+          タイトルは読者の興味を引くものになっている
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer">
+          <input type="checkbox" id="chk-intro" style="width:16px;height:16px">
+          導入文で記事の価値が伝わっている
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer">
+          <input type="checkbox" id="chk-body" style="width:16px;height:16px">
+          本文に十分なボリュームと具体例がある
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer">
+          <input type="checkbox" id="chk-tags" style="width:16px;height:16px">
+          適切なタグを設定している
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer">
+          <input type="checkbox" id="chk-proof" style="width:16px;height:16px">
+          誤字・脱字のチェックが済んでいる
+        </label>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="markNoteReady(document.getElementById('note-check-id').value)" style="background:#41b883;color:#fff;border:none;flex:1">✅ 公開準備完了としてマーク</button>
+        <button class="btn btn-ghost" onclick="closeNotePublishModal()" style="flex:1">戻る</button>
+      </div>
+      <div style="margin-top:16px;padding:12px;background:rgba(65,184,131,0.07);border-radius:8px;font-size:12px;color:var(--muted)">
+        💡 将来のNote API連携で、ここから直接投稿できるようになります
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ==================== STATE ====================
 const DB = {
@@ -1188,12 +1263,13 @@ const DB = {
   save: (k, v) => localStorage.setItem(k, JSON.stringify(v))
 };
 
-let ideas     = DB.load('vo_ideas',    []);
-let research  = DB.load('vo_research', []);
-let tasks     = DB.load('vo_tasks',    []);
-let drafts    = DB.load('vo_drafts',   []);
-let ceoMission= DB.load('vo_mission',  '');
-let snsTab    = 'X';
+let ideas      = DB.load('vo_ideas',      []);
+let research   = DB.load('vo_research',   []);
+let tasks      = DB.load('vo_tasks',      []);
+let drafts     = DB.load('vo_drafts',     []);
+let noteDrafts = DB.load('vo_notedrafts', []);
+let ceoMission = DB.load('vo_mission',    '');
+let snsTab     = 'X';
 
 // ==================== CLOCK ====================
 function updateClock() {
@@ -1739,7 +1815,13 @@ function setSnsTab(tab) {
   snsTab = tab;
   document.querySelectorAll('.sns-tab').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
-  updateSnsCount();
+  const isNote = tab === 'Note';
+  document.getElementById('sns-composer').style.display    = isNote ? 'none' : '';
+  document.getElementById('note-composer').style.display   = isNote ? ''     : 'none';
+  document.getElementById('drafts-section').style.display  = isNote ? 'none' : '';
+  document.getElementById('note-drafts-section').style.display = isNote ? '' : 'none';
+  if (!isNote) updateSnsCount();
+  if (isNote) renderNoteDrafts();
 }
 
 function updateSnsCount() {
@@ -1921,11 +2003,9 @@ async function loadPDF(input) {
   document.getElementById('pdf-progress').textContent = '📄 PDFを読み込み中...';
 
   try {
-    if (!window.pdfjsLib) {
-      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
-      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    }
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     let text = '';
@@ -1933,24 +2013,18 @@ async function loadPDF(input) {
       document.getElementById('pdf-progress').textContent = `📄 ${i}/${pdf.numPages}ページ読み込み中...`;
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
-      text += content.items.map(item => item.str).join(' ') + '\n';
+      text += content.items.map(item => item.str).join('') + '\n';
     }
-    document.getElementById('proof-text').value = text.trim();
+    const extracted = text.trim();
+    document.getElementById('proof-text').value = extracted;
     analyzeText();
-    document.getElementById('pdf-progress').textContent = `✅ ${pdf.numPages}ページ読み込み完了`;
+    document.getElementById('pdf-progress').textContent =
+      extracted.length > 0
+        ? `✅ ${pdf.numPages}ページ・${extracted.length}文字読み込み完了`
+        : `⚠ ${pdf.numPages}ページ読み込みましたが文字を抽出できませんでした`;
   } catch(e) {
     document.getElementById('pdf-progress').textContent = '❌ 読み込みエラー: ' + e.message;
   }
-}
-
-function loadScript(src) {
-  return new Promise((resolve, reject) => {
-    const s = document.createElement('script');
-    s.src = src;
-    s.onload = resolve;
-    s.onerror = reject;
-    document.head.appendChild(s);
-  });
 }
 
 async function summarizeWithGemini(mode) {
