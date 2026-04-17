@@ -1537,6 +1537,8 @@ function renderResearch() {
 }
 
 // Google Sheets エクスポート機能
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbya706_xyM2STx9m4AYcF2zATVFI4-wbVabG3U9rGGHxXiiHxbVZTHOu6JwAj_pG2IyYQ/exec';
+
 function exportResearchToSheets() {
   const statusEl = document.getElementById('export-status');
   
@@ -1564,33 +1566,31 @@ function exportResearchToSheets() {
     }))
   };
   
-  // LocalStorage に保存
   DB.save('vo_research_export', exportData);
-  autoSaveResearchData();
-  
-  // ブラウザにダウンロード形式で表示
-  try {
-    const dataStr = JSON.stringify(exportData, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `research_export_${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    
-    statusEl.innerHTML = `✅ <strong>${research.length}件のデータをダウンロード!</strong><br><small style="color:var(--muted);display:block;margin-top:4px">次: 統合部で「Google Sheets に同期」をクリック →</small>`;
-    statusEl.style.color = 'var(--dept-work)';
-  } catch (e) {
-    console.error('ダウンロードエラー:', e);
-    statusEl.textContent = '⚠ ダウンロード処理中にエラーが発生しました';
-  }
-  
-  setTimeout(() => {
-    statusEl.textContent = '';
-  }, 8000);
+
+  statusEl.textContent = '📤 Google Driveに送信中...';
+  statusEl.style.color = 'var(--muted)';
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(exportData)
+  })
+  .then(res => res.json())
+  .then(result => {
+    if (result.success) {
+      statusEl.innerHTML = `✅ <strong>${result.count}件をGoogle Driveに保存しました</strong>`;
+      statusEl.style.color = 'var(--dept-work)';
+    } else {
+      statusEl.textContent = '⚠ 保存に失敗しました: ' + (result.error || '不明なエラー');
+      statusEl.style.color = 'var(--dept-proof)';
+    }
+    setTimeout(() => statusEl.textContent = '', 6000);
+  })
+  .catch(err => {
+    statusEl.textContent = '⚠ 接続エラー: ' + err.message;
+    statusEl.style.color = 'var(--dept-proof)';
+    setTimeout(() => statusEl.textContent = '', 6000);
+  });
 }
 
 function autoSaveResearchData() {
