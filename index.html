@@ -769,10 +769,26 @@ body {
       <button class="modal-close" onclick="closeModal('plan')">✕</button>
     </div>
     <div class="modal-body">
+      <!-- 企画部の目的 -->
+      <div style="background:var(--surface2);border:1px solid var(--dept-plan);border-radius:12px;padding:16px;margin-bottom:20px">
+        <div style="font-size:13px;color:var(--dept-plan);font-weight:700;margin-bottom:8px">📋 企画部の目的</div>
+        <div style="font-size:13px;color:var(--text);line-height:1.8">
+          <p style="margin-bottom:8px">事業の成長と革新を推進するため、戦略的なアイデアを生み出し、実行可能な企画へと発展させることです。</p>
+          <div style="margin-top:12px;color:var(--muted);font-size:12px">
+            <strong style="color:var(--text)">主な職務：</strong><br>
+            • 新規事業/企画のアイデア出し<br>
+            • マーケティング施策の企画<br>
+            • プロジェクト進捗管理<br>
+            • 実行可能性の検証と改善
+          </div>
+        </div>
+      </div>
+
       <div class="row">
         <input class="input" id="plan-input" placeholder="アイデアを入力…" style="flex:1" maxlength="100">
         <button class="btn btn-plan" onclick="addIdea()">追加</button>
       </div>
+      <div class="section-title">進捗管理 — カンバンボード</div>
       <div class="kanban" id="kanban-board">
         <div class="kanban-col" id="col-idea">
           <div class="kanban-col-title">
